@@ -1,0 +1,1816 @@
+
+Scheduler_Sprints.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000b42  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .bss          000001fc  00800060  00800060  00000bb6  2**0
+                  ALLOC
+  2 .stab         0000111c  00000000  00000000  00000bb8  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  3 .stabstr      00000cd0  00000000  00000000  00001cd4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+   8:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+   c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  10:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  14:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  18:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  1c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  20:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  24:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  28:	0c 94 8e 02 	jmp	0x51c	; 0x51c <__vector_10>
+  2c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  30:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  34:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  38:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  3c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  40:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  44:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  48:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  4c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+  50:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d8 e0       	ldi	r29, 0x08	; 8
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+
+00000060 <__do_clear_bss>:
+  60:	12 e0       	ldi	r17, 0x02	; 2
+  62:	a0 e6       	ldi	r26, 0x60	; 96
+  64:	b0 e0       	ldi	r27, 0x00	; 0
+  66:	01 c0       	rjmp	.+2      	; 0x6a <.do_clear_bss_start>
+
+00000068 <.do_clear_bss_loop>:
+  68:	1d 92       	st	X+, r1
+
+0000006a <.do_clear_bss_start>:
+  6a:	ac 35       	cpi	r26, 0x5C	; 92
+  6c:	b1 07       	cpc	r27, r17
+  6e:	e1 f7       	brne	.-8      	; 0x68 <.do_clear_bss_loop>
+  70:	0e 94 e8 04 	call	0x9d0	; 0x9d0 <main>
+  74:	0c 94 9f 05 	jmp	0xb3e	; 0xb3e <_exit>
+
+00000078 <__bad_interrupt>:
+  78:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000007c <DIO_WritePin>:
+
+#include "DIO_Map.h"
+#include "Macro.h"
+#include "std_types.h"
+void DIO_WritePin(uint8 PinNum,uint8 PinValue)
+{
+  7c:	df 93       	push	r29
+  7e:	cf 93       	push	r28
+  80:	00 d0       	rcall	.+0      	; 0x82 <DIO_WritePin+0x6>
+  82:	cd b7       	in	r28, 0x3d	; 61
+  84:	de b7       	in	r29, 0x3e	; 62
+  86:	89 83       	std	Y+1, r24	; 0x01
+  88:	6a 83       	std	Y+2, r22	; 0x02
+	if(PinValue==HIGH)
+  8a:	8a 81       	ldd	r24, Y+2	; 0x02
+  8c:	81 30       	cpi	r24, 0x01	; 1
+  8e:	09 f0       	breq	.+2      	; 0x92 <DIO_WritePin+0x16>
+  90:	6d c0       	rjmp	.+218    	; 0x16c <DIO_WritePin+0xf0>
+	{
+		if((PinNum>=DIO_PIN0)&&(PinNum<=DIO_PIN7))
+  92:	89 81       	ldd	r24, Y+1	; 0x01
+  94:	88 30       	cpi	r24, 0x08	; 8
+  96:	a0 f4       	brcc	.+40     	; 0xc0 <DIO_WritePin+0x44>
+		{
+			SET_BIT(DIO_PORTA,PinNum);
+  98:	ab e3       	ldi	r26, 0x3B	; 59
+  9a:	b0 e0       	ldi	r27, 0x00	; 0
+  9c:	eb e3       	ldi	r30, 0x3B	; 59
+  9e:	f0 e0       	ldi	r31, 0x00	; 0
+  a0:	80 81       	ld	r24, Z
+  a2:	48 2f       	mov	r20, r24
+  a4:	89 81       	ldd	r24, Y+1	; 0x01
+  a6:	28 2f       	mov	r18, r24
+  a8:	30 e0       	ldi	r19, 0x00	; 0
+  aa:	81 e0       	ldi	r24, 0x01	; 1
+  ac:	90 e0       	ldi	r25, 0x00	; 0
+  ae:	02 2e       	mov	r0, r18
+  b0:	02 c0       	rjmp	.+4      	; 0xb6 <DIO_WritePin+0x3a>
+  b2:	88 0f       	add	r24, r24
+  b4:	99 1f       	adc	r25, r25
+  b6:	0a 94       	dec	r0
+  b8:	e2 f7       	brpl	.-8      	; 0xb2 <DIO_WritePin+0x36>
+  ba:	84 2b       	or	r24, r20
+  bc:	8c 93       	st	X, r24
+  be:	c8 c0       	rjmp	.+400    	; 0x250 <DIO_WritePin+0x1d4>
+		}
+		else if((PinNum>=DIO_PIN8)&&(PinNum<=DIO_PIN15))
+  c0:	89 81       	ldd	r24, Y+1	; 0x01
+  c2:	88 30       	cpi	r24, 0x08	; 8
+  c4:	c8 f0       	brcs	.+50     	; 0xf8 <DIO_WritePin+0x7c>
+  c6:	89 81       	ldd	r24, Y+1	; 0x01
+  c8:	80 31       	cpi	r24, 0x10	; 16
+  ca:	b0 f4       	brcc	.+44     	; 0xf8 <DIO_WritePin+0x7c>
+		{
+			SET_BIT(DIO_PORTB,(PinNum-DIO_PIN8));
+  cc:	a8 e3       	ldi	r26, 0x38	; 56
+  ce:	b0 e0       	ldi	r27, 0x00	; 0
+  d0:	e8 e3       	ldi	r30, 0x38	; 56
+  d2:	f0 e0       	ldi	r31, 0x00	; 0
+  d4:	80 81       	ld	r24, Z
+  d6:	48 2f       	mov	r20, r24
+  d8:	89 81       	ldd	r24, Y+1	; 0x01
+  da:	88 2f       	mov	r24, r24
+  dc:	90 e0       	ldi	r25, 0x00	; 0
+  de:	08 97       	sbiw	r24, 0x08	; 8
+  e0:	9c 01       	movw	r18, r24
+  e2:	81 e0       	ldi	r24, 0x01	; 1
+  e4:	90 e0       	ldi	r25, 0x00	; 0
+  e6:	02 2e       	mov	r0, r18
+  e8:	02 c0       	rjmp	.+4      	; 0xee <DIO_WritePin+0x72>
+  ea:	88 0f       	add	r24, r24
+  ec:	99 1f       	adc	r25, r25
+  ee:	0a 94       	dec	r0
+  f0:	e2 f7       	brpl	.-8      	; 0xea <DIO_WritePin+0x6e>
+  f2:	84 2b       	or	r24, r20
+  f4:	8c 93       	st	X, r24
+  f6:	ac c0       	rjmp	.+344    	; 0x250 <DIO_WritePin+0x1d4>
+		}
+		else if((PinNum>=DIO_PIN16)&&(PinNum<=DIO_PIN23))
+  f8:	89 81       	ldd	r24, Y+1	; 0x01
+  fa:	80 31       	cpi	r24, 0x10	; 16
+  fc:	c8 f0       	brcs	.+50     	; 0x130 <DIO_WritePin+0xb4>
+  fe:	89 81       	ldd	r24, Y+1	; 0x01
+ 100:	88 31       	cpi	r24, 0x18	; 24
+ 102:	b0 f4       	brcc	.+44     	; 0x130 <DIO_WritePin+0xb4>
+		{
+			SET_BIT(DIO_PORTC,(PinNum-DIO_PIN16));
+ 104:	a5 e3       	ldi	r26, 0x35	; 53
+ 106:	b0 e0       	ldi	r27, 0x00	; 0
+ 108:	e5 e3       	ldi	r30, 0x35	; 53
+ 10a:	f0 e0       	ldi	r31, 0x00	; 0
+ 10c:	80 81       	ld	r24, Z
+ 10e:	48 2f       	mov	r20, r24
+ 110:	89 81       	ldd	r24, Y+1	; 0x01
+ 112:	88 2f       	mov	r24, r24
+ 114:	90 e0       	ldi	r25, 0x00	; 0
+ 116:	40 97       	sbiw	r24, 0x10	; 16
+ 118:	9c 01       	movw	r18, r24
+ 11a:	81 e0       	ldi	r24, 0x01	; 1
+ 11c:	90 e0       	ldi	r25, 0x00	; 0
+ 11e:	02 2e       	mov	r0, r18
+ 120:	02 c0       	rjmp	.+4      	; 0x126 <DIO_WritePin+0xaa>
+ 122:	88 0f       	add	r24, r24
+ 124:	99 1f       	adc	r25, r25
+ 126:	0a 94       	dec	r0
+ 128:	e2 f7       	brpl	.-8      	; 0x122 <DIO_WritePin+0xa6>
+ 12a:	84 2b       	or	r24, r20
+ 12c:	8c 93       	st	X, r24
+ 12e:	90 c0       	rjmp	.+288    	; 0x250 <DIO_WritePin+0x1d4>
+		}
+		else if((PinNum>=DIO_PIN24)&&(PinNum<=DIO_PIN31))
+ 130:	89 81       	ldd	r24, Y+1	; 0x01
+ 132:	88 31       	cpi	r24, 0x18	; 24
+ 134:	08 f4       	brcc	.+2      	; 0x138 <DIO_WritePin+0xbc>
+ 136:	8c c0       	rjmp	.+280    	; 0x250 <DIO_WritePin+0x1d4>
+ 138:	89 81       	ldd	r24, Y+1	; 0x01
+ 13a:	80 32       	cpi	r24, 0x20	; 32
+ 13c:	08 f0       	brcs	.+2      	; 0x140 <DIO_WritePin+0xc4>
+ 13e:	88 c0       	rjmp	.+272    	; 0x250 <DIO_WritePin+0x1d4>
+		{
+			SET_BIT(DIO_PORTD,(PinNum-DIO_PIN24));
+ 140:	a2 e3       	ldi	r26, 0x32	; 50
+ 142:	b0 e0       	ldi	r27, 0x00	; 0
+ 144:	e2 e3       	ldi	r30, 0x32	; 50
+ 146:	f0 e0       	ldi	r31, 0x00	; 0
+ 148:	80 81       	ld	r24, Z
+ 14a:	48 2f       	mov	r20, r24
+ 14c:	89 81       	ldd	r24, Y+1	; 0x01
+ 14e:	88 2f       	mov	r24, r24
+ 150:	90 e0       	ldi	r25, 0x00	; 0
+ 152:	48 97       	sbiw	r24, 0x18	; 24
+ 154:	9c 01       	movw	r18, r24
+ 156:	81 e0       	ldi	r24, 0x01	; 1
+ 158:	90 e0       	ldi	r25, 0x00	; 0
+ 15a:	02 2e       	mov	r0, r18
+ 15c:	02 c0       	rjmp	.+4      	; 0x162 <DIO_WritePin+0xe6>
+ 15e:	88 0f       	add	r24, r24
+ 160:	99 1f       	adc	r25, r25
+ 162:	0a 94       	dec	r0
+ 164:	e2 f7       	brpl	.-8      	; 0x15e <DIO_WritePin+0xe2>
+ 166:	84 2b       	or	r24, r20
+ 168:	8c 93       	st	X, r24
+ 16a:	72 c0       	rjmp	.+228    	; 0x250 <DIO_WritePin+0x1d4>
+		}
+	}
+	else if(PinValue==DIO_PIN0)
+ 16c:	8a 81       	ldd	r24, Y+2	; 0x02
+ 16e:	88 23       	and	r24, r24
+ 170:	09 f0       	breq	.+2      	; 0x174 <DIO_WritePin+0xf8>
+ 172:	6e c0       	rjmp	.+220    	; 0x250 <DIO_WritePin+0x1d4>
+	{
+
+		if((PinNum>=DIO_PIN0)&&(PinNum<=DIO_PIN7))
+ 174:	89 81       	ldd	r24, Y+1	; 0x01
+ 176:	88 30       	cpi	r24, 0x08	; 8
+ 178:	a8 f4       	brcc	.+42     	; 0x1a4 <DIO_WritePin+0x128>
+		{
+			CLEAR_BIT(DIO_PORTA,PinNum);
+ 17a:	ab e3       	ldi	r26, 0x3B	; 59
+ 17c:	b0 e0       	ldi	r27, 0x00	; 0
+ 17e:	eb e3       	ldi	r30, 0x3B	; 59
+ 180:	f0 e0       	ldi	r31, 0x00	; 0
+ 182:	80 81       	ld	r24, Z
+ 184:	48 2f       	mov	r20, r24
+ 186:	89 81       	ldd	r24, Y+1	; 0x01
+ 188:	28 2f       	mov	r18, r24
+ 18a:	30 e0       	ldi	r19, 0x00	; 0
+ 18c:	81 e0       	ldi	r24, 0x01	; 1
+ 18e:	90 e0       	ldi	r25, 0x00	; 0
+ 190:	02 2e       	mov	r0, r18
+ 192:	02 c0       	rjmp	.+4      	; 0x198 <DIO_WritePin+0x11c>
+ 194:	88 0f       	add	r24, r24
+ 196:	99 1f       	adc	r25, r25
+ 198:	0a 94       	dec	r0
+ 19a:	e2 f7       	brpl	.-8      	; 0x194 <DIO_WritePin+0x118>
+ 19c:	80 95       	com	r24
+ 19e:	84 23       	and	r24, r20
+ 1a0:	8c 93       	st	X, r24
+ 1a2:	56 c0       	rjmp	.+172    	; 0x250 <DIO_WritePin+0x1d4>
+		}
+		else if((PinNum>=DIO_PIN8)&&(PinNum<=DIO_PIN15))
+ 1a4:	89 81       	ldd	r24, Y+1	; 0x01
+ 1a6:	88 30       	cpi	r24, 0x08	; 8
+ 1a8:	d0 f0       	brcs	.+52     	; 0x1de <DIO_WritePin+0x162>
+ 1aa:	89 81       	ldd	r24, Y+1	; 0x01
+ 1ac:	80 31       	cpi	r24, 0x10	; 16
+ 1ae:	b8 f4       	brcc	.+46     	; 0x1de <DIO_WritePin+0x162>
+		{
+			CLEAR_BIT(DIO_PORTB,(PinNum-DIO_PIN8));
+ 1b0:	a8 e3       	ldi	r26, 0x38	; 56
+ 1b2:	b0 e0       	ldi	r27, 0x00	; 0
+ 1b4:	e8 e3       	ldi	r30, 0x38	; 56
+ 1b6:	f0 e0       	ldi	r31, 0x00	; 0
+ 1b8:	80 81       	ld	r24, Z
+ 1ba:	48 2f       	mov	r20, r24
+ 1bc:	89 81       	ldd	r24, Y+1	; 0x01
+ 1be:	88 2f       	mov	r24, r24
+ 1c0:	90 e0       	ldi	r25, 0x00	; 0
+ 1c2:	08 97       	sbiw	r24, 0x08	; 8
+ 1c4:	9c 01       	movw	r18, r24
+ 1c6:	81 e0       	ldi	r24, 0x01	; 1
+ 1c8:	90 e0       	ldi	r25, 0x00	; 0
+ 1ca:	02 2e       	mov	r0, r18
+ 1cc:	02 c0       	rjmp	.+4      	; 0x1d2 <DIO_WritePin+0x156>
+ 1ce:	88 0f       	add	r24, r24
+ 1d0:	99 1f       	adc	r25, r25
+ 1d2:	0a 94       	dec	r0
+ 1d4:	e2 f7       	brpl	.-8      	; 0x1ce <DIO_WritePin+0x152>
+ 1d6:	80 95       	com	r24
+ 1d8:	84 23       	and	r24, r20
+ 1da:	8c 93       	st	X, r24
+ 1dc:	39 c0       	rjmp	.+114    	; 0x250 <DIO_WritePin+0x1d4>
+		}
+		else if((PinNum>=DIO_PIN16)&&(PinNum<=DIO_PIN23))
+ 1de:	89 81       	ldd	r24, Y+1	; 0x01
+ 1e0:	80 31       	cpi	r24, 0x10	; 16
+ 1e2:	d0 f0       	brcs	.+52     	; 0x218 <DIO_WritePin+0x19c>
+ 1e4:	89 81       	ldd	r24, Y+1	; 0x01
+ 1e6:	88 31       	cpi	r24, 0x18	; 24
+ 1e8:	b8 f4       	brcc	.+46     	; 0x218 <DIO_WritePin+0x19c>
+		{
+			CLEAR_BIT(DIO_PORTC,(PinNum-DIO_PIN16));
+ 1ea:	a5 e3       	ldi	r26, 0x35	; 53
+ 1ec:	b0 e0       	ldi	r27, 0x00	; 0
+ 1ee:	e5 e3       	ldi	r30, 0x35	; 53
+ 1f0:	f0 e0       	ldi	r31, 0x00	; 0
+ 1f2:	80 81       	ld	r24, Z
+ 1f4:	48 2f       	mov	r20, r24
+ 1f6:	89 81       	ldd	r24, Y+1	; 0x01
+ 1f8:	88 2f       	mov	r24, r24
+ 1fa:	90 e0       	ldi	r25, 0x00	; 0
+ 1fc:	40 97       	sbiw	r24, 0x10	; 16
+ 1fe:	9c 01       	movw	r18, r24
+ 200:	81 e0       	ldi	r24, 0x01	; 1
+ 202:	90 e0       	ldi	r25, 0x00	; 0
+ 204:	02 2e       	mov	r0, r18
+ 206:	02 c0       	rjmp	.+4      	; 0x20c <DIO_WritePin+0x190>
+ 208:	88 0f       	add	r24, r24
+ 20a:	99 1f       	adc	r25, r25
+ 20c:	0a 94       	dec	r0
+ 20e:	e2 f7       	brpl	.-8      	; 0x208 <DIO_WritePin+0x18c>
+ 210:	80 95       	com	r24
+ 212:	84 23       	and	r24, r20
+ 214:	8c 93       	st	X, r24
+ 216:	1c c0       	rjmp	.+56     	; 0x250 <DIO_WritePin+0x1d4>
+		}
+		else if((PinNum>=DIO_PIN24)&&(PinNum<=DIO_PIN31))
+ 218:	89 81       	ldd	r24, Y+1	; 0x01
+ 21a:	88 31       	cpi	r24, 0x18	; 24
+ 21c:	c8 f0       	brcs	.+50     	; 0x250 <DIO_WritePin+0x1d4>
+ 21e:	89 81       	ldd	r24, Y+1	; 0x01
+ 220:	80 32       	cpi	r24, 0x20	; 32
+ 222:	b0 f4       	brcc	.+44     	; 0x250 <DIO_WritePin+0x1d4>
+		{
+			CLEAR_BIT(DIO_PORTD,(PinNum-DIO_PIN24));
+ 224:	a2 e3       	ldi	r26, 0x32	; 50
+ 226:	b0 e0       	ldi	r27, 0x00	; 0
+ 228:	e2 e3       	ldi	r30, 0x32	; 50
+ 22a:	f0 e0       	ldi	r31, 0x00	; 0
+ 22c:	80 81       	ld	r24, Z
+ 22e:	48 2f       	mov	r20, r24
+ 230:	89 81       	ldd	r24, Y+1	; 0x01
+ 232:	88 2f       	mov	r24, r24
+ 234:	90 e0       	ldi	r25, 0x00	; 0
+ 236:	48 97       	sbiw	r24, 0x18	; 24
+ 238:	9c 01       	movw	r18, r24
+ 23a:	81 e0       	ldi	r24, 0x01	; 1
+ 23c:	90 e0       	ldi	r25, 0x00	; 0
+ 23e:	02 2e       	mov	r0, r18
+ 240:	02 c0       	rjmp	.+4      	; 0x246 <DIO_WritePin+0x1ca>
+ 242:	88 0f       	add	r24, r24
+ 244:	99 1f       	adc	r25, r25
+ 246:	0a 94       	dec	r0
+ 248:	e2 f7       	brpl	.-8      	; 0x242 <DIO_WritePin+0x1c6>
+ 24a:	80 95       	com	r24
+ 24c:	84 23       	and	r24, r20
+ 24e:	8c 93       	st	X, r24
+
+		}
+	}
+
+}
+ 250:	0f 90       	pop	r0
+ 252:	0f 90       	pop	r0
+ 254:	cf 91       	pop	r28
+ 256:	df 91       	pop	r29
+ 258:	08 95       	ret
+
+0000025a <DIO_ReadPin>:
+uint8 DIO_ReadPin(uint8 PinNum)
+{
+ 25a:	df 93       	push	r29
+ 25c:	cf 93       	push	r28
+ 25e:	00 d0       	rcall	.+0      	; 0x260 <DIO_ReadPin+0x6>
+ 260:	cd b7       	in	r28, 0x3d	; 61
+ 262:	de b7       	in	r29, 0x3e	; 62
+ 264:	89 83       	std	Y+1, r24	; 0x01
+	if((PinNum>=DIO_PIN0)&&(PinNum<=DIO_PIN7))
+ 266:	89 81       	ldd	r24, Y+1	; 0x01
+ 268:	88 30       	cpi	r24, 0x08	; 8
+ 26a:	98 f4       	brcc	.+38     	; 0x292 <DIO_ReadPin+0x38>
+	{
+		return GET_BIT(DIO_PINA,PinNum);
+ 26c:	e9 e3       	ldi	r30, 0x39	; 57
+ 26e:	f0 e0       	ldi	r31, 0x00	; 0
+ 270:	80 81       	ld	r24, Z
+ 272:	28 2f       	mov	r18, r24
+ 274:	30 e0       	ldi	r19, 0x00	; 0
+ 276:	89 81       	ldd	r24, Y+1	; 0x01
+ 278:	88 2f       	mov	r24, r24
+ 27a:	90 e0       	ldi	r25, 0x00	; 0
+ 27c:	a9 01       	movw	r20, r18
+ 27e:	02 c0       	rjmp	.+4      	; 0x284 <DIO_ReadPin+0x2a>
+ 280:	55 95       	asr	r21
+ 282:	47 95       	ror	r20
+ 284:	8a 95       	dec	r24
+ 286:	e2 f7       	brpl	.-8      	; 0x280 <DIO_ReadPin+0x26>
+ 288:	ca 01       	movw	r24, r20
+ 28a:	58 2f       	mov	r21, r24
+ 28c:	51 70       	andi	r21, 0x01	; 1
+ 28e:	5a 83       	std	Y+2, r21	; 0x02
+ 290:	50 c0       	rjmp	.+160    	; 0x332 <DIO_ReadPin+0xd8>
+	}
+	else if((PinNum>=DIO_PIN8)&&(PinNum<=DIO_PIN15))
+ 292:	89 81       	ldd	r24, Y+1	; 0x01
+ 294:	88 30       	cpi	r24, 0x08	; 8
+ 296:	b8 f0       	brcs	.+46     	; 0x2c6 <DIO_ReadPin+0x6c>
+ 298:	89 81       	ldd	r24, Y+1	; 0x01
+ 29a:	80 31       	cpi	r24, 0x10	; 16
+ 29c:	a0 f4       	brcc	.+40     	; 0x2c6 <DIO_ReadPin+0x6c>
+	{
+		return GET_BIT(DIO_PINB,(PinNum-DIO_PIN8));
+ 29e:	e6 e3       	ldi	r30, 0x36	; 54
+ 2a0:	f0 e0       	ldi	r31, 0x00	; 0
+ 2a2:	80 81       	ld	r24, Z
+ 2a4:	28 2f       	mov	r18, r24
+ 2a6:	30 e0       	ldi	r19, 0x00	; 0
+ 2a8:	89 81       	ldd	r24, Y+1	; 0x01
+ 2aa:	88 2f       	mov	r24, r24
+ 2ac:	90 e0       	ldi	r25, 0x00	; 0
+ 2ae:	08 97       	sbiw	r24, 0x08	; 8
+ 2b0:	a9 01       	movw	r20, r18
+ 2b2:	02 c0       	rjmp	.+4      	; 0x2b8 <DIO_ReadPin+0x5e>
+ 2b4:	55 95       	asr	r21
+ 2b6:	47 95       	ror	r20
+ 2b8:	8a 95       	dec	r24
+ 2ba:	e2 f7       	brpl	.-8      	; 0x2b4 <DIO_ReadPin+0x5a>
+ 2bc:	ca 01       	movw	r24, r20
+ 2be:	58 2f       	mov	r21, r24
+ 2c0:	51 70       	andi	r21, 0x01	; 1
+ 2c2:	5a 83       	std	Y+2, r21	; 0x02
+ 2c4:	36 c0       	rjmp	.+108    	; 0x332 <DIO_ReadPin+0xd8>
+	}
+	else if((PinNum>=DIO_PIN16)&&(PinNum<=DIO_PIN23))
+ 2c6:	89 81       	ldd	r24, Y+1	; 0x01
+ 2c8:	80 31       	cpi	r24, 0x10	; 16
+ 2ca:	b8 f0       	brcs	.+46     	; 0x2fa <DIO_ReadPin+0xa0>
+ 2cc:	89 81       	ldd	r24, Y+1	; 0x01
+ 2ce:	88 31       	cpi	r24, 0x18	; 24
+ 2d0:	a0 f4       	brcc	.+40     	; 0x2fa <DIO_ReadPin+0xa0>
+	{
+		return GET_BIT(DIO_PINC,(PinNum-DIO_PIN16));
+ 2d2:	e3 e3       	ldi	r30, 0x33	; 51
+ 2d4:	f0 e0       	ldi	r31, 0x00	; 0
+ 2d6:	80 81       	ld	r24, Z
+ 2d8:	28 2f       	mov	r18, r24
+ 2da:	30 e0       	ldi	r19, 0x00	; 0
+ 2dc:	89 81       	ldd	r24, Y+1	; 0x01
+ 2de:	88 2f       	mov	r24, r24
+ 2e0:	90 e0       	ldi	r25, 0x00	; 0
+ 2e2:	40 97       	sbiw	r24, 0x10	; 16
+ 2e4:	a9 01       	movw	r20, r18
+ 2e6:	02 c0       	rjmp	.+4      	; 0x2ec <DIO_ReadPin+0x92>
+ 2e8:	55 95       	asr	r21
+ 2ea:	47 95       	ror	r20
+ 2ec:	8a 95       	dec	r24
+ 2ee:	e2 f7       	brpl	.-8      	; 0x2e8 <DIO_ReadPin+0x8e>
+ 2f0:	ca 01       	movw	r24, r20
+ 2f2:	58 2f       	mov	r21, r24
+ 2f4:	51 70       	andi	r21, 0x01	; 1
+ 2f6:	5a 83       	std	Y+2, r21	; 0x02
+ 2f8:	1c c0       	rjmp	.+56     	; 0x332 <DIO_ReadPin+0xd8>
+	}
+	else if((PinNum>=DIO_PIN24)&&(PinNum<=DIO_PIN31))
+ 2fa:	89 81       	ldd	r24, Y+1	; 0x01
+ 2fc:	88 31       	cpi	r24, 0x18	; 24
+ 2fe:	b8 f0       	brcs	.+46     	; 0x32e <DIO_ReadPin+0xd4>
+ 300:	89 81       	ldd	r24, Y+1	; 0x01
+ 302:	80 32       	cpi	r24, 0x20	; 32
+ 304:	a0 f4       	brcc	.+40     	; 0x32e <DIO_ReadPin+0xd4>
+	{
+		return GET_BIT(DIO_PIND,(PinNum-DIO_PIN24));
+ 306:	e0 e3       	ldi	r30, 0x30	; 48
+ 308:	f0 e0       	ldi	r31, 0x00	; 0
+ 30a:	80 81       	ld	r24, Z
+ 30c:	28 2f       	mov	r18, r24
+ 30e:	30 e0       	ldi	r19, 0x00	; 0
+ 310:	89 81       	ldd	r24, Y+1	; 0x01
+ 312:	88 2f       	mov	r24, r24
+ 314:	90 e0       	ldi	r25, 0x00	; 0
+ 316:	48 97       	sbiw	r24, 0x18	; 24
+ 318:	a9 01       	movw	r20, r18
+ 31a:	02 c0       	rjmp	.+4      	; 0x320 <DIO_ReadPin+0xc6>
+ 31c:	55 95       	asr	r21
+ 31e:	47 95       	ror	r20
+ 320:	8a 95       	dec	r24
+ 322:	e2 f7       	brpl	.-8      	; 0x31c <DIO_ReadPin+0xc2>
+ 324:	ca 01       	movw	r24, r20
+ 326:	58 2f       	mov	r21, r24
+ 328:	51 70       	andi	r21, 0x01	; 1
+ 32a:	5a 83       	std	Y+2, r21	; 0x02
+ 32c:	02 c0       	rjmp	.+4      	; 0x332 <DIO_ReadPin+0xd8>
+	}
+	return DIO_PIN8;
+ 32e:	88 e0       	ldi	r24, 0x08	; 8
+ 330:	8a 83       	std	Y+2, r24	; 0x02
+ 332:	8a 81       	ldd	r24, Y+2	; 0x02
+}
+ 334:	0f 90       	pop	r0
+ 336:	0f 90       	pop	r0
+ 338:	cf 91       	pop	r28
+ 33a:	df 91       	pop	r29
+ 33c:	08 95       	ret
+
+0000033e <DIO_SetPinDirection>:
+void DIO_SetPinDirection(uint8 PinNum,uint8 PinDirection)
+{
+ 33e:	df 93       	push	r29
+ 340:	cf 93       	push	r28
+ 342:	00 d0       	rcall	.+0      	; 0x344 <DIO_SetPinDirection+0x6>
+ 344:	cd b7       	in	r28, 0x3d	; 61
+ 346:	de b7       	in	r29, 0x3e	; 62
+ 348:	89 83       	std	Y+1, r24	; 0x01
+ 34a:	6a 83       	std	Y+2, r22	; 0x02
+	if(PinDirection==INPUT)
+ 34c:	8a 81       	ldd	r24, Y+2	; 0x02
+ 34e:	88 23       	and	r24, r24
+ 350:	09 f0       	breq	.+2      	; 0x354 <DIO_SetPinDirection+0x16>
+ 352:	71 c0       	rjmp	.+226    	; 0x436 <DIO_SetPinDirection+0xf8>
+	{
+		if((PinNum>=DIO_PIN0)&&(PinNum<=DIO_PIN7))
+ 354:	89 81       	ldd	r24, Y+1	; 0x01
+ 356:	88 30       	cpi	r24, 0x08	; 8
+ 358:	a8 f4       	brcc	.+42     	; 0x384 <DIO_SetPinDirection+0x46>
+		{
+			CLEAR_BIT(DIO_DDRA,PinNum);
+ 35a:	aa e3       	ldi	r26, 0x3A	; 58
+ 35c:	b0 e0       	ldi	r27, 0x00	; 0
+ 35e:	ea e3       	ldi	r30, 0x3A	; 58
+ 360:	f0 e0       	ldi	r31, 0x00	; 0
+ 362:	80 81       	ld	r24, Z
+ 364:	48 2f       	mov	r20, r24
+ 366:	89 81       	ldd	r24, Y+1	; 0x01
+ 368:	28 2f       	mov	r18, r24
+ 36a:	30 e0       	ldi	r19, 0x00	; 0
+ 36c:	81 e0       	ldi	r24, 0x01	; 1
+ 36e:	90 e0       	ldi	r25, 0x00	; 0
+ 370:	02 2e       	mov	r0, r18
+ 372:	02 c0       	rjmp	.+4      	; 0x378 <DIO_SetPinDirection+0x3a>
+ 374:	88 0f       	add	r24, r24
+ 376:	99 1f       	adc	r25, r25
+ 378:	0a 94       	dec	r0
+ 37a:	e2 f7       	brpl	.-8      	; 0x374 <DIO_SetPinDirection+0x36>
+ 37c:	80 95       	com	r24
+ 37e:	84 23       	and	r24, r20
+ 380:	8c 93       	st	X, r24
+ 382:	c7 c0       	rjmp	.+398    	; 0x512 <DIO_SetPinDirection+0x1d4>
+		}
+		else if((PinNum>=DIO_PIN8)&&(PinNum<=DIO_PIN15))
+ 384:	89 81       	ldd	r24, Y+1	; 0x01
+ 386:	88 30       	cpi	r24, 0x08	; 8
+ 388:	d0 f0       	brcs	.+52     	; 0x3be <DIO_SetPinDirection+0x80>
+ 38a:	89 81       	ldd	r24, Y+1	; 0x01
+ 38c:	80 31       	cpi	r24, 0x10	; 16
+ 38e:	b8 f4       	brcc	.+46     	; 0x3be <DIO_SetPinDirection+0x80>
+		{
+			CLEAR_BIT(DIO_DDRB,(PinNum-DIO_PIN8));
+ 390:	a7 e3       	ldi	r26, 0x37	; 55
+ 392:	b0 e0       	ldi	r27, 0x00	; 0
+ 394:	e7 e3       	ldi	r30, 0x37	; 55
+ 396:	f0 e0       	ldi	r31, 0x00	; 0
+ 398:	80 81       	ld	r24, Z
+ 39a:	48 2f       	mov	r20, r24
+ 39c:	89 81       	ldd	r24, Y+1	; 0x01
+ 39e:	88 2f       	mov	r24, r24
+ 3a0:	90 e0       	ldi	r25, 0x00	; 0
+ 3a2:	08 97       	sbiw	r24, 0x08	; 8
+ 3a4:	9c 01       	movw	r18, r24
+ 3a6:	81 e0       	ldi	r24, 0x01	; 1
+ 3a8:	90 e0       	ldi	r25, 0x00	; 0
+ 3aa:	02 2e       	mov	r0, r18
+ 3ac:	02 c0       	rjmp	.+4      	; 0x3b2 <DIO_SetPinDirection+0x74>
+ 3ae:	88 0f       	add	r24, r24
+ 3b0:	99 1f       	adc	r25, r25
+ 3b2:	0a 94       	dec	r0
+ 3b4:	e2 f7       	brpl	.-8      	; 0x3ae <DIO_SetPinDirection+0x70>
+ 3b6:	80 95       	com	r24
+ 3b8:	84 23       	and	r24, r20
+ 3ba:	8c 93       	st	X, r24
+ 3bc:	aa c0       	rjmp	.+340    	; 0x512 <DIO_SetPinDirection+0x1d4>
+		}
+		else if((PinNum>=DIO_PIN16)&&(PinNum<=DIO_PIN23))
+ 3be:	89 81       	ldd	r24, Y+1	; 0x01
+ 3c0:	80 31       	cpi	r24, 0x10	; 16
+ 3c2:	d0 f0       	brcs	.+52     	; 0x3f8 <DIO_SetPinDirection+0xba>
+ 3c4:	89 81       	ldd	r24, Y+1	; 0x01
+ 3c6:	88 31       	cpi	r24, 0x18	; 24
+ 3c8:	b8 f4       	brcc	.+46     	; 0x3f8 <DIO_SetPinDirection+0xba>
+		{
+			CLEAR_BIT(DIO_DDRC,(PinNum-DIO_PIN16));
+ 3ca:	a4 e3       	ldi	r26, 0x34	; 52
+ 3cc:	b0 e0       	ldi	r27, 0x00	; 0
+ 3ce:	e4 e3       	ldi	r30, 0x34	; 52
+ 3d0:	f0 e0       	ldi	r31, 0x00	; 0
+ 3d2:	80 81       	ld	r24, Z
+ 3d4:	48 2f       	mov	r20, r24
+ 3d6:	89 81       	ldd	r24, Y+1	; 0x01
+ 3d8:	88 2f       	mov	r24, r24
+ 3da:	90 e0       	ldi	r25, 0x00	; 0
+ 3dc:	40 97       	sbiw	r24, 0x10	; 16
+ 3de:	9c 01       	movw	r18, r24
+ 3e0:	81 e0       	ldi	r24, 0x01	; 1
+ 3e2:	90 e0       	ldi	r25, 0x00	; 0
+ 3e4:	02 2e       	mov	r0, r18
+ 3e6:	02 c0       	rjmp	.+4      	; 0x3ec <DIO_SetPinDirection+0xae>
+ 3e8:	88 0f       	add	r24, r24
+ 3ea:	99 1f       	adc	r25, r25
+ 3ec:	0a 94       	dec	r0
+ 3ee:	e2 f7       	brpl	.-8      	; 0x3e8 <DIO_SetPinDirection+0xaa>
+ 3f0:	80 95       	com	r24
+ 3f2:	84 23       	and	r24, r20
+ 3f4:	8c 93       	st	X, r24
+ 3f6:	8d c0       	rjmp	.+282    	; 0x512 <DIO_SetPinDirection+0x1d4>
+		}
+		else if((PinNum>=DIO_PIN24)&&(PinNum<=DIO_PIN31))
+ 3f8:	89 81       	ldd	r24, Y+1	; 0x01
+ 3fa:	88 31       	cpi	r24, 0x18	; 24
+ 3fc:	08 f4       	brcc	.+2      	; 0x400 <DIO_SetPinDirection+0xc2>
+ 3fe:	89 c0       	rjmp	.+274    	; 0x512 <DIO_SetPinDirection+0x1d4>
+ 400:	89 81       	ldd	r24, Y+1	; 0x01
+ 402:	80 32       	cpi	r24, 0x20	; 32
+ 404:	08 f0       	brcs	.+2      	; 0x408 <DIO_SetPinDirection+0xca>
+ 406:	85 c0       	rjmp	.+266    	; 0x512 <DIO_SetPinDirection+0x1d4>
+		{
+			CLEAR_BIT(DIO_DDRD,(PinNum-DIO_PIN24));
+ 408:	a1 e3       	ldi	r26, 0x31	; 49
+ 40a:	b0 e0       	ldi	r27, 0x00	; 0
+ 40c:	e1 e3       	ldi	r30, 0x31	; 49
+ 40e:	f0 e0       	ldi	r31, 0x00	; 0
+ 410:	80 81       	ld	r24, Z
+ 412:	48 2f       	mov	r20, r24
+ 414:	89 81       	ldd	r24, Y+1	; 0x01
+ 416:	88 2f       	mov	r24, r24
+ 418:	90 e0       	ldi	r25, 0x00	; 0
+ 41a:	48 97       	sbiw	r24, 0x18	; 24
+ 41c:	9c 01       	movw	r18, r24
+ 41e:	81 e0       	ldi	r24, 0x01	; 1
+ 420:	90 e0       	ldi	r25, 0x00	; 0
+ 422:	02 2e       	mov	r0, r18
+ 424:	02 c0       	rjmp	.+4      	; 0x42a <DIO_SetPinDirection+0xec>
+ 426:	88 0f       	add	r24, r24
+ 428:	99 1f       	adc	r25, r25
+ 42a:	0a 94       	dec	r0
+ 42c:	e2 f7       	brpl	.-8      	; 0x426 <DIO_SetPinDirection+0xe8>
+ 42e:	80 95       	com	r24
+ 430:	84 23       	and	r24, r20
+ 432:	8c 93       	st	X, r24
+ 434:	6e c0       	rjmp	.+220    	; 0x512 <DIO_SetPinDirection+0x1d4>
+		}
+	}
+	else if(PinDirection==OUTPUT)
+ 436:	8a 81       	ldd	r24, Y+2	; 0x02
+ 438:	81 30       	cpi	r24, 0x01	; 1
+ 43a:	09 f0       	breq	.+2      	; 0x43e <DIO_SetPinDirection+0x100>
+ 43c:	6a c0       	rjmp	.+212    	; 0x512 <DIO_SetPinDirection+0x1d4>
+	{
+		if((PinNum>=DIO_PIN0)&&(PinNum<=DIO_PIN7))
+ 43e:	89 81       	ldd	r24, Y+1	; 0x01
+ 440:	88 30       	cpi	r24, 0x08	; 8
+ 442:	a0 f4       	brcc	.+40     	; 0x46c <DIO_SetPinDirection+0x12e>
+		{
+			SET_BIT(DIO_DDRA,PinNum);
+ 444:	aa e3       	ldi	r26, 0x3A	; 58
+ 446:	b0 e0       	ldi	r27, 0x00	; 0
+ 448:	ea e3       	ldi	r30, 0x3A	; 58
+ 44a:	f0 e0       	ldi	r31, 0x00	; 0
+ 44c:	80 81       	ld	r24, Z
+ 44e:	48 2f       	mov	r20, r24
+ 450:	89 81       	ldd	r24, Y+1	; 0x01
+ 452:	28 2f       	mov	r18, r24
+ 454:	30 e0       	ldi	r19, 0x00	; 0
+ 456:	81 e0       	ldi	r24, 0x01	; 1
+ 458:	90 e0       	ldi	r25, 0x00	; 0
+ 45a:	02 2e       	mov	r0, r18
+ 45c:	02 c0       	rjmp	.+4      	; 0x462 <DIO_SetPinDirection+0x124>
+ 45e:	88 0f       	add	r24, r24
+ 460:	99 1f       	adc	r25, r25
+ 462:	0a 94       	dec	r0
+ 464:	e2 f7       	brpl	.-8      	; 0x45e <DIO_SetPinDirection+0x120>
+ 466:	84 2b       	or	r24, r20
+ 468:	8c 93       	st	X, r24
+ 46a:	53 c0       	rjmp	.+166    	; 0x512 <DIO_SetPinDirection+0x1d4>
+		}
+		else if((PinNum>=DIO_PIN8)&&(PinNum<=DIO_PIN15))
+ 46c:	89 81       	ldd	r24, Y+1	; 0x01
+ 46e:	88 30       	cpi	r24, 0x08	; 8
+ 470:	c8 f0       	brcs	.+50     	; 0x4a4 <DIO_SetPinDirection+0x166>
+ 472:	89 81       	ldd	r24, Y+1	; 0x01
+ 474:	80 31       	cpi	r24, 0x10	; 16
+ 476:	b0 f4       	brcc	.+44     	; 0x4a4 <DIO_SetPinDirection+0x166>
+		{
+			SET_BIT(DIO_DDRB,(PinNum-DIO_PIN8));
+ 478:	a7 e3       	ldi	r26, 0x37	; 55
+ 47a:	b0 e0       	ldi	r27, 0x00	; 0
+ 47c:	e7 e3       	ldi	r30, 0x37	; 55
+ 47e:	f0 e0       	ldi	r31, 0x00	; 0
+ 480:	80 81       	ld	r24, Z
+ 482:	48 2f       	mov	r20, r24
+ 484:	89 81       	ldd	r24, Y+1	; 0x01
+ 486:	88 2f       	mov	r24, r24
+ 488:	90 e0       	ldi	r25, 0x00	; 0
+ 48a:	08 97       	sbiw	r24, 0x08	; 8
+ 48c:	9c 01       	movw	r18, r24
+ 48e:	81 e0       	ldi	r24, 0x01	; 1
+ 490:	90 e0       	ldi	r25, 0x00	; 0
+ 492:	02 2e       	mov	r0, r18
+ 494:	02 c0       	rjmp	.+4      	; 0x49a <DIO_SetPinDirection+0x15c>
+ 496:	88 0f       	add	r24, r24
+ 498:	99 1f       	adc	r25, r25
+ 49a:	0a 94       	dec	r0
+ 49c:	e2 f7       	brpl	.-8      	; 0x496 <DIO_SetPinDirection+0x158>
+ 49e:	84 2b       	or	r24, r20
+ 4a0:	8c 93       	st	X, r24
+ 4a2:	37 c0       	rjmp	.+110    	; 0x512 <DIO_SetPinDirection+0x1d4>
+		}
+		else if((PinNum>=DIO_PIN16)&&(PinNum<=DIO_PIN23))
+ 4a4:	89 81       	ldd	r24, Y+1	; 0x01
+ 4a6:	80 31       	cpi	r24, 0x10	; 16
+ 4a8:	c8 f0       	brcs	.+50     	; 0x4dc <DIO_SetPinDirection+0x19e>
+ 4aa:	89 81       	ldd	r24, Y+1	; 0x01
+ 4ac:	88 31       	cpi	r24, 0x18	; 24
+ 4ae:	b0 f4       	brcc	.+44     	; 0x4dc <DIO_SetPinDirection+0x19e>
+		{
+			SET_BIT(DIO_DDRC,(PinNum-DIO_PIN16));
+ 4b0:	a4 e3       	ldi	r26, 0x34	; 52
+ 4b2:	b0 e0       	ldi	r27, 0x00	; 0
+ 4b4:	e4 e3       	ldi	r30, 0x34	; 52
+ 4b6:	f0 e0       	ldi	r31, 0x00	; 0
+ 4b8:	80 81       	ld	r24, Z
+ 4ba:	48 2f       	mov	r20, r24
+ 4bc:	89 81       	ldd	r24, Y+1	; 0x01
+ 4be:	88 2f       	mov	r24, r24
+ 4c0:	90 e0       	ldi	r25, 0x00	; 0
+ 4c2:	40 97       	sbiw	r24, 0x10	; 16
+ 4c4:	9c 01       	movw	r18, r24
+ 4c6:	81 e0       	ldi	r24, 0x01	; 1
+ 4c8:	90 e0       	ldi	r25, 0x00	; 0
+ 4ca:	02 2e       	mov	r0, r18
+ 4cc:	02 c0       	rjmp	.+4      	; 0x4d2 <DIO_SetPinDirection+0x194>
+ 4ce:	88 0f       	add	r24, r24
+ 4d0:	99 1f       	adc	r25, r25
+ 4d2:	0a 94       	dec	r0
+ 4d4:	e2 f7       	brpl	.-8      	; 0x4ce <DIO_SetPinDirection+0x190>
+ 4d6:	84 2b       	or	r24, r20
+ 4d8:	8c 93       	st	X, r24
+ 4da:	1b c0       	rjmp	.+54     	; 0x512 <DIO_SetPinDirection+0x1d4>
+		}
+		else if((PinNum>=DIO_PIN24)&&(PinNum<=DIO_PIN31))
+ 4dc:	89 81       	ldd	r24, Y+1	; 0x01
+ 4de:	88 31       	cpi	r24, 0x18	; 24
+ 4e0:	c0 f0       	brcs	.+48     	; 0x512 <DIO_SetPinDirection+0x1d4>
+ 4e2:	89 81       	ldd	r24, Y+1	; 0x01
+ 4e4:	80 32       	cpi	r24, 0x20	; 32
+ 4e6:	a8 f4       	brcc	.+42     	; 0x512 <DIO_SetPinDirection+0x1d4>
+		{
+			SET_BIT(DIO_DDRD,(PinNum-DIO_PIN24));
+ 4e8:	a1 e3       	ldi	r26, 0x31	; 49
+ 4ea:	b0 e0       	ldi	r27, 0x00	; 0
+ 4ec:	e1 e3       	ldi	r30, 0x31	; 49
+ 4ee:	f0 e0       	ldi	r31, 0x00	; 0
+ 4f0:	80 81       	ld	r24, Z
+ 4f2:	48 2f       	mov	r20, r24
+ 4f4:	89 81       	ldd	r24, Y+1	; 0x01
+ 4f6:	88 2f       	mov	r24, r24
+ 4f8:	90 e0       	ldi	r25, 0x00	; 0
+ 4fa:	48 97       	sbiw	r24, 0x18	; 24
+ 4fc:	9c 01       	movw	r18, r24
+ 4fe:	81 e0       	ldi	r24, 0x01	; 1
+ 500:	90 e0       	ldi	r25, 0x00	; 0
+ 502:	02 2e       	mov	r0, r18
+ 504:	02 c0       	rjmp	.+4      	; 0x50a <DIO_SetPinDirection+0x1cc>
+ 506:	88 0f       	add	r24, r24
+ 508:	99 1f       	adc	r25, r25
+ 50a:	0a 94       	dec	r0
+ 50c:	e2 f7       	brpl	.-8      	; 0x506 <DIO_SetPinDirection+0x1c8>
+ 50e:	84 2b       	or	r24, r20
+ 510:	8c 93       	st	X, r24
+		}
+	}
+
+
+}
+ 512:	0f 90       	pop	r0
+ 514:	0f 90       	pop	r0
+ 516:	cf 91       	pop	r28
+ 518:	df 91       	pop	r29
+ 51a:	08 95       	ret
+
+0000051c <__vector_10>:
+ * Outputs:			NULL
+ *
+ * Return:			NULL
+ *******************************************************************************/
+ISR(TIMER0_COMP_vect)
+{
+ 51c:	1f 92       	push	r1
+ 51e:	0f 92       	push	r0
+ 520:	0f b6       	in	r0, 0x3f	; 63
+ 522:	0f 92       	push	r0
+ 524:	11 24       	eor	r1, r1
+ 526:	ef 92       	push	r14
+ 528:	ff 92       	push	r15
+ 52a:	0f 93       	push	r16
+ 52c:	1f 93       	push	r17
+ 52e:	2f 93       	push	r18
+ 530:	3f 93       	push	r19
+ 532:	4f 93       	push	r20
+ 534:	5f 93       	push	r21
+ 536:	6f 93       	push	r22
+ 538:	7f 93       	push	r23
+ 53a:	8f 93       	push	r24
+ 53c:	9f 93       	push	r25
+ 53e:	af 93       	push	r26
+ 540:	bf 93       	push	r27
+ 542:	ef 93       	push	r30
+ 544:	ff 93       	push	r31
+ 546:	df 93       	push	r29
+ 548:	cf 93       	push	r28
+ 54a:	0f 92       	push	r0
+ 54c:	cd b7       	in	r28, 0x3d	; 61
+ 54e:	de b7       	in	r29, 0x3e	; 62
+
+	TimerTich++;
+ 550:	80 91 60 00 	lds	r24, 0x0060
+ 554:	90 91 61 00 	lds	r25, 0x0061
+ 558:	a0 91 62 00 	lds	r26, 0x0062
+ 55c:	b0 91 63 00 	lds	r27, 0x0063
+ 560:	01 96       	adiw	r24, 0x01	; 1
+ 562:	a1 1d       	adc	r26, r1
+ 564:	b1 1d       	adc	r27, r1
+ 566:	80 93 60 00 	sts	0x0060, r24
+ 56a:	90 93 61 00 	sts	0x0061, r25
+ 56e:	a0 93 62 00 	sts	0x0062, r26
+ 572:	b0 93 63 00 	sts	0x0063, r27
+	/*for loop to check on all tasks to determine which one needs to convert to ready state*/
+	for(uint8 counter=0; counter<MAX_TASKS; counter++)
+ 576:	19 82       	std	Y+1, r1	; 0x01
+ 578:	46 c0       	rjmp	.+140    	; 0x606 <__vector_10+0xea>
+	{
+		/*check if any task exists in this priority index*/
+		if(SOS_TasksArray[counter].TaskFunction_ptr != NULL_PTR)
+ 57a:	89 81       	ldd	r24, Y+1	; 0x01
+ 57c:	28 2f       	mov	r18, r24
+ 57e:	30 e0       	ldi	r19, 0x00	; 0
+ 580:	c9 01       	movw	r24, r18
+ 582:	88 0f       	add	r24, r24
+ 584:	99 1f       	adc	r25, r25
+ 586:	88 0f       	add	r24, r24
+ 588:	99 1f       	adc	r25, r25
+ 58a:	82 0f       	add	r24, r18
+ 58c:	93 1f       	adc	r25, r19
+ 58e:	fc 01       	movw	r30, r24
+ 590:	e5 59       	subi	r30, 0x95	; 149
+ 592:	ff 4f       	sbci	r31, 0xFF	; 255
+ 594:	80 81       	ld	r24, Z
+ 596:	91 81       	ldd	r25, Z+1	; 0x01
+ 598:	00 97       	sbiw	r24, 0x00	; 0
+ 59a:	91 f1       	breq	.+100    	; 0x600 <__vector_10+0xe4>
+		{
+			/*check if any task needs to convert to ready state*/
+			if(((TimerTich) % (SOS_TasksArray[counter].TaskPeriodicity)) == 0u)
+ 59c:	e0 90 60 00 	lds	r14, 0x0060
+ 5a0:	f0 90 61 00 	lds	r15, 0x0061
+ 5a4:	00 91 62 00 	lds	r16, 0x0062
+ 5a8:	10 91 63 00 	lds	r17, 0x0063
+ 5ac:	89 81       	ldd	r24, Y+1	; 0x01
+ 5ae:	28 2f       	mov	r18, r24
+ 5b0:	30 e0       	ldi	r19, 0x00	; 0
+ 5b2:	c9 01       	movw	r24, r18
+ 5b4:	88 0f       	add	r24, r24
+ 5b6:	99 1f       	adc	r25, r25
+ 5b8:	88 0f       	add	r24, r24
+ 5ba:	99 1f       	adc	r25, r25
+ 5bc:	82 0f       	add	r24, r18
+ 5be:	93 1f       	adc	r25, r19
+ 5c0:	fc 01       	movw	r30, r24
+ 5c2:	e7 59       	subi	r30, 0x97	; 151
+ 5c4:	ff 4f       	sbci	r31, 0xFF	; 255
+ 5c6:	80 81       	ld	r24, Z
+ 5c8:	91 81       	ldd	r25, Z+1	; 0x01
+ 5ca:	9c 01       	movw	r18, r24
+ 5cc:	40 e0       	ldi	r20, 0x00	; 0
+ 5ce:	50 e0       	ldi	r21, 0x00	; 0
+ 5d0:	c8 01       	movw	r24, r16
+ 5d2:	b7 01       	movw	r22, r14
+ 5d4:	0e 94 7d 05 	call	0xafa	; 0xafa <__udivmodsi4>
+ 5d8:	dc 01       	movw	r26, r24
+ 5da:	cb 01       	movw	r24, r22
+ 5dc:	00 97       	sbiw	r24, 0x00	; 0
+ 5de:	a1 05       	cpc	r26, r1
+ 5e0:	b1 05       	cpc	r27, r1
+ 5e2:	71 f4       	brne	.+28     	; 0x600 <__vector_10+0xe4>
+			{
+
+				SOS_TasksArray[counter].TaskState = SOS_READY;
+ 5e4:	89 81       	ldd	r24, Y+1	; 0x01
+ 5e6:	28 2f       	mov	r18, r24
+ 5e8:	30 e0       	ldi	r19, 0x00	; 0
+ 5ea:	c9 01       	movw	r24, r18
+ 5ec:	88 0f       	add	r24, r24
+ 5ee:	99 1f       	adc	r25, r25
+ 5f0:	88 0f       	add	r24, r24
+ 5f2:	99 1f       	adc	r25, r25
+ 5f4:	82 0f       	add	r24, r18
+ 5f6:	93 1f       	adc	r25, r19
+ 5f8:	fc 01       	movw	r30, r24
+ 5fa:	e8 59       	subi	r30, 0x98	; 152
+ 5fc:	ff 4f       	sbci	r31, 0xFF	; 255
+ 5fe:	10 82       	st	Z, r1
+ISR(TIMER0_COMP_vect)
+{
+
+	TimerTich++;
+	/*for loop to check on all tasks to determine which one needs to convert to ready state*/
+	for(uint8 counter=0; counter<MAX_TASKS; counter++)
+ 600:	89 81       	ldd	r24, Y+1	; 0x01
+ 602:	8f 5f       	subi	r24, 0xFF	; 255
+ 604:	89 83       	std	Y+1, r24	; 0x01
+ 606:	89 81       	ldd	r24, Y+1	; 0x01
+ 608:	84 36       	cpi	r24, 0x64	; 100
+ 60a:	08 f4       	brcc	.+2      	; 0x60e <__vector_10+0xf2>
+ 60c:	b6 cf       	rjmp	.-148    	; 0x57a <__vector_10+0x5e>
+			{
+				/*Do Nothing*/
+			}
+		}
+	}
+}
+ 60e:	0f 90       	pop	r0
+ 610:	cf 91       	pop	r28
+ 612:	df 91       	pop	r29
+ 614:	ff 91       	pop	r31
+ 616:	ef 91       	pop	r30
+ 618:	bf 91       	pop	r27
+ 61a:	af 91       	pop	r26
+ 61c:	9f 91       	pop	r25
+ 61e:	8f 91       	pop	r24
+ 620:	7f 91       	pop	r23
+ 622:	6f 91       	pop	r22
+ 624:	5f 91       	pop	r21
+ 626:	4f 91       	pop	r20
+ 628:	3f 91       	pop	r19
+ 62a:	2f 91       	pop	r18
+ 62c:	1f 91       	pop	r17
+ 62e:	0f 91       	pop	r16
+ 630:	ff 90       	pop	r15
+ 632:	ef 90       	pop	r14
+ 634:	0f 90       	pop	r0
+ 636:	0f be       	out	0x3f, r0	; 63
+ 638:	0f 90       	pop	r0
+ 63a:	1f 90       	pop	r1
+ 63c:	18 95       	reti
+
+0000063e <SOS_Init>:
+ * Outputs:			NULL
+ *
+ * Return:			NULL
+ *******************************************************************************/
+void SOS_Init(void)
+{
+ 63e:	df 93       	push	r29
+ 640:	cf 93       	push	r28
+ 642:	0f 92       	push	r0
+ 644:	cd b7       	in	r28, 0x3d	; 61
+ 646:	de b7       	in	r29, 0x3e	; 62
+	/*Initialize TIMER0 */
+	TIMER_init();
+ 648:	0e 94 a2 04 	call	0x944	; 0x944 <TIMER_init>
+	/*for loop to initialize all tasks in tasks array*/
+	for (uint8 counter=0; counter<MAX_TASKS;   counter++)
+ 64c:	19 82       	std	Y+1, r1	; 0x01
+ 64e:	30 c0       	rjmp	.+96     	; 0x6b0 <SOS_Init+0x72>
+	{
+		SOS_TasksArray[counter].TaskPeriodicity = 0u;
+ 650:	89 81       	ldd	r24, Y+1	; 0x01
+ 652:	28 2f       	mov	r18, r24
+ 654:	30 e0       	ldi	r19, 0x00	; 0
+ 656:	c9 01       	movw	r24, r18
+ 658:	88 0f       	add	r24, r24
+ 65a:	99 1f       	adc	r25, r25
+ 65c:	88 0f       	add	r24, r24
+ 65e:	99 1f       	adc	r25, r25
+ 660:	82 0f       	add	r24, r18
+ 662:	93 1f       	adc	r25, r19
+ 664:	fc 01       	movw	r30, r24
+ 666:	e7 59       	subi	r30, 0x97	; 151
+ 668:	ff 4f       	sbci	r31, 0xFF	; 255
+ 66a:	11 82       	std	Z+1, r1	; 0x01
+ 66c:	10 82       	st	Z, r1
+		SOS_TasksArray[counter].TaskState=SOS_WAITING;
+ 66e:	89 81       	ldd	r24, Y+1	; 0x01
+ 670:	28 2f       	mov	r18, r24
+ 672:	30 e0       	ldi	r19, 0x00	; 0
+ 674:	c9 01       	movw	r24, r18
+ 676:	88 0f       	add	r24, r24
+ 678:	99 1f       	adc	r25, r25
+ 67a:	88 0f       	add	r24, r24
+ 67c:	99 1f       	adc	r25, r25
+ 67e:	82 0f       	add	r24, r18
+ 680:	93 1f       	adc	r25, r19
+ 682:	fc 01       	movw	r30, r24
+ 684:	e8 59       	subi	r30, 0x98	; 152
+ 686:	ff 4f       	sbci	r31, 0xFF	; 255
+ 688:	82 e0       	ldi	r24, 0x02	; 2
+ 68a:	80 83       	st	Z, r24
+		SOS_TasksArray[counter].TaskFunction_ptr = NULL_PTR;
+ 68c:	89 81       	ldd	r24, Y+1	; 0x01
+ 68e:	28 2f       	mov	r18, r24
+ 690:	30 e0       	ldi	r19, 0x00	; 0
+ 692:	c9 01       	movw	r24, r18
+ 694:	88 0f       	add	r24, r24
+ 696:	99 1f       	adc	r25, r25
+ 698:	88 0f       	add	r24, r24
+ 69a:	99 1f       	adc	r25, r25
+ 69c:	82 0f       	add	r24, r18
+ 69e:	93 1f       	adc	r25, r19
+ 6a0:	fc 01       	movw	r30, r24
+ 6a2:	e5 59       	subi	r30, 0x95	; 149
+ 6a4:	ff 4f       	sbci	r31, 0xFF	; 255
+ 6a6:	11 82       	std	Z+1, r1	; 0x01
+ 6a8:	10 82       	st	Z, r1
+void SOS_Init(void)
+{
+	/*Initialize TIMER0 */
+	TIMER_init();
+	/*for loop to initialize all tasks in tasks array*/
+	for (uint8 counter=0; counter<MAX_TASKS;   counter++)
+ 6aa:	89 81       	ldd	r24, Y+1	; 0x01
+ 6ac:	8f 5f       	subi	r24, 0xFF	; 255
+ 6ae:	89 83       	std	Y+1, r24	; 0x01
+ 6b0:	89 81       	ldd	r24, Y+1	; 0x01
+ 6b2:	84 36       	cpi	r24, 0x64	; 100
+ 6b4:	68 f2       	brcs	.-102    	; 0x650 <SOS_Init+0x12>
+	{
+		SOS_TasksArray[counter].TaskPeriodicity = 0u;
+		SOS_TasksArray[counter].TaskState=SOS_WAITING;
+		SOS_TasksArray[counter].TaskFunction_ptr = NULL_PTR;
+	}
+}
+ 6b6:	0f 90       	pop	r0
+ 6b8:	cf 91       	pop	r28
+ 6ba:	df 91       	pop	r29
+ 6bc:	08 95       	ret
+
+000006be <SOS_Create_Task>:
+ * Outputs:			NULL
+ *
+ * Return:			Status check if execution occurs correctly
+ *******************************************************************************/
+EnmCreateTaskStatus_t SOS_Create_Task(EnmSchedulerTaskPriority_t a_Priority,uint16 a_TaskPeriodicity,void (*TaskFunction_ptr)(void))
+{
+ 6be:	df 93       	push	r29
+ 6c0:	cf 93       	push	r28
+ 6c2:	00 d0       	rcall	.+0      	; 0x6c4 <SOS_Create_Task+0x6>
+ 6c4:	00 d0       	rcall	.+0      	; 0x6c6 <SOS_Create_Task+0x8>
+ 6c6:	00 d0       	rcall	.+0      	; 0x6c8 <SOS_Create_Task+0xa>
+ 6c8:	cd b7       	in	r28, 0x3d	; 61
+ 6ca:	de b7       	in	r29, 0x3e	; 62
+ 6cc:	8a 83       	std	Y+2, r24	; 0x02
+ 6ce:	7c 83       	std	Y+4, r23	; 0x04
+ 6d0:	6b 83       	std	Y+3, r22	; 0x03
+ 6d2:	5e 83       	std	Y+6, r21	; 0x06
+ 6d4:	4d 83       	std	Y+5, r20	; 0x05
+	 /*return status to check if task enters to scheduler*/
+	EnmCreateTaskStatus_t ReturnVal;
+	/*check if task has same priority of entered task or not*/
+	if(SOS_TasksArray[a_Priority].TaskFunction_ptr == NULL_PTR)
+ 6d6:	8a 81       	ldd	r24, Y+2	; 0x02
+ 6d8:	28 2f       	mov	r18, r24
+ 6da:	30 e0       	ldi	r19, 0x00	; 0
+ 6dc:	c9 01       	movw	r24, r18
+ 6de:	88 0f       	add	r24, r24
+ 6e0:	99 1f       	adc	r25, r25
+ 6e2:	88 0f       	add	r24, r24
+ 6e4:	99 1f       	adc	r25, r25
+ 6e6:	82 0f       	add	r24, r18
+ 6e8:	93 1f       	adc	r25, r19
+ 6ea:	fc 01       	movw	r30, r24
+ 6ec:	e5 59       	subi	r30, 0x95	; 149
+ 6ee:	ff 4f       	sbci	r31, 0xFF	; 255
+ 6f0:	80 81       	ld	r24, Z
+ 6f2:	91 81       	ldd	r25, Z+1	; 0x01
+ 6f4:	00 97       	sbiw	r24, 0x00	; 0
+ 6f6:	99 f5       	brne	.+102    	; 0x75e <SOS_Create_Task+0xa0>
+	{
+		/*add task to scheduler*/
+		SOS_TasksArray[a_Priority].TaskFunction_ptr = TaskFunction_ptr;
+ 6f8:	8a 81       	ldd	r24, Y+2	; 0x02
+ 6fa:	28 2f       	mov	r18, r24
+ 6fc:	30 e0       	ldi	r19, 0x00	; 0
+ 6fe:	c9 01       	movw	r24, r18
+ 700:	88 0f       	add	r24, r24
+ 702:	99 1f       	adc	r25, r25
+ 704:	88 0f       	add	r24, r24
+ 706:	99 1f       	adc	r25, r25
+ 708:	82 0f       	add	r24, r18
+ 70a:	93 1f       	adc	r25, r19
+ 70c:	fc 01       	movw	r30, r24
+ 70e:	e5 59       	subi	r30, 0x95	; 149
+ 710:	ff 4f       	sbci	r31, 0xFF	; 255
+ 712:	8d 81       	ldd	r24, Y+5	; 0x05
+ 714:	9e 81       	ldd	r25, Y+6	; 0x06
+ 716:	91 83       	std	Z+1, r25	; 0x01
+ 718:	80 83       	st	Z, r24
+		SOS_TasksArray[a_Priority].TaskPeriodicity=a_TaskPeriodicity;
+ 71a:	8a 81       	ldd	r24, Y+2	; 0x02
+ 71c:	28 2f       	mov	r18, r24
+ 71e:	30 e0       	ldi	r19, 0x00	; 0
+ 720:	c9 01       	movw	r24, r18
+ 722:	88 0f       	add	r24, r24
+ 724:	99 1f       	adc	r25, r25
+ 726:	88 0f       	add	r24, r24
+ 728:	99 1f       	adc	r25, r25
+ 72a:	82 0f       	add	r24, r18
+ 72c:	93 1f       	adc	r25, r19
+ 72e:	fc 01       	movw	r30, r24
+ 730:	e7 59       	subi	r30, 0x97	; 151
+ 732:	ff 4f       	sbci	r31, 0xFF	; 255
+ 734:	8b 81       	ldd	r24, Y+3	; 0x03
+ 736:	9c 81       	ldd	r25, Y+4	; 0x04
+ 738:	91 83       	std	Z+1, r25	; 0x01
+ 73a:	80 83       	st	Z, r24
+		SOS_TasksArray[a_Priority].TaskState=SOS_WAITING;
+ 73c:	8a 81       	ldd	r24, Y+2	; 0x02
+ 73e:	28 2f       	mov	r18, r24
+ 740:	30 e0       	ldi	r19, 0x00	; 0
+ 742:	c9 01       	movw	r24, r18
+ 744:	88 0f       	add	r24, r24
+ 746:	99 1f       	adc	r25, r25
+ 748:	88 0f       	add	r24, r24
+ 74a:	99 1f       	adc	r25, r25
+ 74c:	82 0f       	add	r24, r18
+ 74e:	93 1f       	adc	r25, r19
+ 750:	fc 01       	movw	r30, r24
+ 752:	e8 59       	subi	r30, 0x98	; 152
+ 754:	ff 4f       	sbci	r31, 0xFF	; 255
+ 756:	82 e0       	ldi	r24, 0x02	; 2
+ 758:	80 83       	st	Z, r24
+		ReturnVal = OK;
+ 75a:	19 82       	std	Y+1, r1	; 0x01
+ 75c:	02 c0       	rjmp	.+4      	; 0x762 <SOS_Create_Task+0xa4>
+	}
+	else
+	{
+		ReturnVal = TASK_PRIORITY_RESERVED;
+ 75e:	81 e0       	ldi	r24, 0x01	; 1
+ 760:	89 83       	std	Y+1, r24	; 0x01
+	}
+
+	return ReturnVal;
+ 762:	89 81       	ldd	r24, Y+1	; 0x01
+}
+ 764:	26 96       	adiw	r28, 0x06	; 6
+ 766:	0f b6       	in	r0, 0x3f	; 63
+ 768:	f8 94       	cli
+ 76a:	de bf       	out	0x3e, r29	; 62
+ 76c:	0f be       	out	0x3f, r0	; 63
+ 76e:	cd bf       	out	0x3d, r28	; 61
+ 770:	cf 91       	pop	r28
+ 772:	df 91       	pop	r29
+ 774:	08 95       	ret
+
+00000776 <SOS_Delete_Task>:
+ * Outputs:			NULL
+ *
+ * Return:			NULL
+ *******************************************************************************/
+void SOS_Delete_Task (void (*a_DeletedFunction_ptr)(void))
+{
+ 776:	df 93       	push	r29
+ 778:	cf 93       	push	r28
+ 77a:	00 d0       	rcall	.+0      	; 0x77c <SOS_Delete_Task+0x6>
+ 77c:	0f 92       	push	r0
+ 77e:	cd b7       	in	r28, 0x3d	; 61
+ 780:	de b7       	in	r29, 0x3e	; 62
+ 782:	9b 83       	std	Y+3, r25	; 0x03
+ 784:	8a 83       	std	Y+2, r24	; 0x02
+	/*for loop get task that wanted to be deleted from scheduler*/
+	for(uint8 counter = 0; counter<MAX_TASKS; counter++)
+ 786:	19 82       	std	Y+1, r1	; 0x01
+ 788:	45 c0       	rjmp	.+138    	; 0x814 <SOS_Delete_Task+0x9e>
+	{
+		/*Check on the task that wanted to be deleted from scheduler*/
+		if(SOS_TasksArray[counter].TaskFunction_ptr == a_DeletedFunction_ptr)
+ 78a:	89 81       	ldd	r24, Y+1	; 0x01
+ 78c:	28 2f       	mov	r18, r24
+ 78e:	30 e0       	ldi	r19, 0x00	; 0
+ 790:	c9 01       	movw	r24, r18
+ 792:	88 0f       	add	r24, r24
+ 794:	99 1f       	adc	r25, r25
+ 796:	88 0f       	add	r24, r24
+ 798:	99 1f       	adc	r25, r25
+ 79a:	82 0f       	add	r24, r18
+ 79c:	93 1f       	adc	r25, r19
+ 79e:	fc 01       	movw	r30, r24
+ 7a0:	e5 59       	subi	r30, 0x95	; 149
+ 7a2:	ff 4f       	sbci	r31, 0xFF	; 255
+ 7a4:	20 81       	ld	r18, Z
+ 7a6:	31 81       	ldd	r19, Z+1	; 0x01
+ 7a8:	8a 81       	ldd	r24, Y+2	; 0x02
+ 7aa:	9b 81       	ldd	r25, Y+3	; 0x03
+ 7ac:	28 17       	cp	r18, r24
+ 7ae:	39 07       	cpc	r19, r25
+ 7b0:	71 f5       	brne	.+92     	; 0x80e <SOS_Delete_Task+0x98>
+		{
+			SOS_TasksArray[counter].TaskFunction_ptr = NULL_PTR;
+ 7b2:	89 81       	ldd	r24, Y+1	; 0x01
+ 7b4:	28 2f       	mov	r18, r24
+ 7b6:	30 e0       	ldi	r19, 0x00	; 0
+ 7b8:	c9 01       	movw	r24, r18
+ 7ba:	88 0f       	add	r24, r24
+ 7bc:	99 1f       	adc	r25, r25
+ 7be:	88 0f       	add	r24, r24
+ 7c0:	99 1f       	adc	r25, r25
+ 7c2:	82 0f       	add	r24, r18
+ 7c4:	93 1f       	adc	r25, r19
+ 7c6:	fc 01       	movw	r30, r24
+ 7c8:	e5 59       	subi	r30, 0x95	; 149
+ 7ca:	ff 4f       	sbci	r31, 0xFF	; 255
+ 7cc:	11 82       	std	Z+1, r1	; 0x01
+ 7ce:	10 82       	st	Z, r1
+			SOS_TasksArray[counter].TaskState=SOS_WAITING;
+ 7d0:	89 81       	ldd	r24, Y+1	; 0x01
+ 7d2:	28 2f       	mov	r18, r24
+ 7d4:	30 e0       	ldi	r19, 0x00	; 0
+ 7d6:	c9 01       	movw	r24, r18
+ 7d8:	88 0f       	add	r24, r24
+ 7da:	99 1f       	adc	r25, r25
+ 7dc:	88 0f       	add	r24, r24
+ 7de:	99 1f       	adc	r25, r25
+ 7e0:	82 0f       	add	r24, r18
+ 7e2:	93 1f       	adc	r25, r19
+ 7e4:	fc 01       	movw	r30, r24
+ 7e6:	e8 59       	subi	r30, 0x98	; 152
+ 7e8:	ff 4f       	sbci	r31, 0xFF	; 255
+ 7ea:	82 e0       	ldi	r24, 0x02	; 2
+ 7ec:	80 83       	st	Z, r24
+			SOS_TasksArray[counter].TaskPeriodicity = 0u;;
+ 7ee:	89 81       	ldd	r24, Y+1	; 0x01
+ 7f0:	28 2f       	mov	r18, r24
+ 7f2:	30 e0       	ldi	r19, 0x00	; 0
+ 7f4:	c9 01       	movw	r24, r18
+ 7f6:	88 0f       	add	r24, r24
+ 7f8:	99 1f       	adc	r25, r25
+ 7fa:	88 0f       	add	r24, r24
+ 7fc:	99 1f       	adc	r25, r25
+ 7fe:	82 0f       	add	r24, r18
+ 800:	93 1f       	adc	r25, r19
+ 802:	fc 01       	movw	r30, r24
+ 804:	e7 59       	subi	r30, 0x97	; 151
+ 806:	ff 4f       	sbci	r31, 0xFF	; 255
+ 808:	11 82       	std	Z+1, r1	; 0x01
+ 80a:	10 82       	st	Z, r1
+ 80c:	07 c0       	rjmp	.+14     	; 0x81c <SOS_Delete_Task+0xa6>
+ * Return:			NULL
+ *******************************************************************************/
+void SOS_Delete_Task (void (*a_DeletedFunction_ptr)(void))
+{
+	/*for loop get task that wanted to be deleted from scheduler*/
+	for(uint8 counter = 0; counter<MAX_TASKS; counter++)
+ 80e:	89 81       	ldd	r24, Y+1	; 0x01
+ 810:	8f 5f       	subi	r24, 0xFF	; 255
+ 812:	89 83       	std	Y+1, r24	; 0x01
+ 814:	89 81       	ldd	r24, Y+1	; 0x01
+ 816:	84 36       	cpi	r24, 0x64	; 100
+ 818:	08 f4       	brcc	.+2      	; 0x81c <SOS_Delete_Task+0xa6>
+ 81a:	b7 cf       	rjmp	.-146    	; 0x78a <SOS_Delete_Task+0x14>
+		else
+		{
+			/*Do Nothing*/
+		}
+	}
+}
+ 81c:	0f 90       	pop	r0
+ 81e:	0f 90       	pop	r0
+ 820:	0f 90       	pop	r0
+ 822:	cf 91       	pop	r28
+ 824:	df 91       	pop	r29
+ 826:	08 95       	ret
+
+00000828 <SOS_Run>:
+ * Outputs:			NULL
+ *
+ * Return:			NULL
+ *******************************************************************************/
+void SOS_Run (void)
+{
+ 828:	df 93       	push	r29
+ 82a:	cf 93       	push	r28
+ 82c:	0f 92       	push	r0
+ 82e:	cd b7       	in	r28, 0x3d	; 61
+ 830:	de b7       	in	r29, 0x3e	; 62
+
+	while(1)
+	{
+		/*loop for searching about ready tasks in scheduler to execute*/
+		for(uint8 counter=0; counter<MAX_TASKS; counter++)
+ 832:	19 82       	std	Y+1, r1	; 0x01
+ 834:	42 c0       	rjmp	.+132    	; 0x8ba <__stack+0x5b>
+		{
+			/*check if the task state is ready*/
+			if(SOS_TasksArray[counter].TaskState == SOS_READY)
+ 836:	89 81       	ldd	r24, Y+1	; 0x01
+ 838:	28 2f       	mov	r18, r24
+ 83a:	30 e0       	ldi	r19, 0x00	; 0
+ 83c:	c9 01       	movw	r24, r18
+ 83e:	88 0f       	add	r24, r24
+ 840:	99 1f       	adc	r25, r25
+ 842:	88 0f       	add	r24, r24
+ 844:	99 1f       	adc	r25, r25
+ 846:	82 0f       	add	r24, r18
+ 848:	93 1f       	adc	r25, r19
+ 84a:	fc 01       	movw	r30, r24
+ 84c:	e8 59       	subi	r30, 0x98	; 152
+ 84e:	ff 4f       	sbci	r31, 0xFF	; 255
+ 850:	80 81       	ld	r24, Z
+ 852:	88 23       	and	r24, r24
+ 854:	79 f5       	brne	.+94     	; 0x8b4 <__stack+0x55>
+			{
+				/*switch task state to Running State*/
+				SOS_TasksArray[counter].TaskState = SOS_RUNNING;
+ 856:	89 81       	ldd	r24, Y+1	; 0x01
+ 858:	28 2f       	mov	r18, r24
+ 85a:	30 e0       	ldi	r19, 0x00	; 0
+ 85c:	c9 01       	movw	r24, r18
+ 85e:	88 0f       	add	r24, r24
+ 860:	99 1f       	adc	r25, r25
+ 862:	88 0f       	add	r24, r24
+ 864:	99 1f       	adc	r25, r25
+ 866:	82 0f       	add	r24, r18
+ 868:	93 1f       	adc	r25, r19
+ 86a:	fc 01       	movw	r30, r24
+ 86c:	e8 59       	subi	r30, 0x98	; 152
+ 86e:	ff 4f       	sbci	r31, 0xFF	; 255
+ 870:	81 e0       	ldi	r24, 0x01	; 1
+ 872:	80 83       	st	Z, r24
+				SOS_TasksArray[counter].TaskFunction_ptr();
+ 874:	89 81       	ldd	r24, Y+1	; 0x01
+ 876:	28 2f       	mov	r18, r24
+ 878:	30 e0       	ldi	r19, 0x00	; 0
+ 87a:	c9 01       	movw	r24, r18
+ 87c:	88 0f       	add	r24, r24
+ 87e:	99 1f       	adc	r25, r25
+ 880:	88 0f       	add	r24, r24
+ 882:	99 1f       	adc	r25, r25
+ 884:	82 0f       	add	r24, r18
+ 886:	93 1f       	adc	r25, r19
+ 888:	fc 01       	movw	r30, r24
+ 88a:	e5 59       	subi	r30, 0x95	; 149
+ 88c:	ff 4f       	sbci	r31, 0xFF	; 255
+ 88e:	01 90       	ld	r0, Z+
+ 890:	f0 81       	ld	r31, Z
+ 892:	e0 2d       	mov	r30, r0
+ 894:	09 95       	icall
+				/*switch task state to waiting State*/
+				SOS_TasksArray[counter].TaskState = SOS_WAITING;
+ 896:	89 81       	ldd	r24, Y+1	; 0x01
+ 898:	28 2f       	mov	r18, r24
+ 89a:	30 e0       	ldi	r19, 0x00	; 0
+ 89c:	c9 01       	movw	r24, r18
+ 89e:	88 0f       	add	r24, r24
+ 8a0:	99 1f       	adc	r25, r25
+ 8a2:	88 0f       	add	r24, r24
+ 8a4:	99 1f       	adc	r25, r25
+ 8a6:	82 0f       	add	r24, r18
+ 8a8:	93 1f       	adc	r25, r19
+ 8aa:	fc 01       	movw	r30, r24
+ 8ac:	e8 59       	subi	r30, 0x98	; 152
+ 8ae:	ff 4f       	sbci	r31, 0xFF	; 255
+ 8b0:	82 e0       	ldi	r24, 0x02	; 2
+ 8b2:	80 83       	st	Z, r24
+{
+
+	while(1)
+	{
+		/*loop for searching about ready tasks in scheduler to execute*/
+		for(uint8 counter=0; counter<MAX_TASKS; counter++)
+ 8b4:	89 81       	ldd	r24, Y+1	; 0x01
+ 8b6:	8f 5f       	subi	r24, 0xFF	; 255
+ 8b8:	89 83       	std	Y+1, r24	; 0x01
+ 8ba:	89 81       	ldd	r24, Y+1	; 0x01
+ 8bc:	84 36       	cpi	r24, 0x64	; 100
+ 8be:	08 f4       	brcc	.+2      	; 0x8c2 <__stack+0x63>
+ 8c0:	ba cf       	rjmp	.-140    	; 0x836 <SOS_Run+0xe>
+ 8c2:	b7 cf       	rjmp	.-146    	; 0x832 <SOS_Run+0xa>
+
+000008c4 <SOS_DeInit>:
+ * Outputs:			NULL
+ *
+ * Return:			NULL
+ *******************************************************************************/
+void SOS_DeInit (void)
+{
+ 8c4:	df 93       	push	r29
+ 8c6:	cf 93       	push	r28
+ 8c8:	0f 92       	push	r0
+ 8ca:	cd b7       	in	r28, 0x3d	; 61
+ 8cc:	de b7       	in	r29, 0x3e	; 62
+	/*Stop TIMER0 */
+	TIMER_Deinit();
+ 8ce:	0e 94 d7 04 	call	0x9ae	; 0x9ae <TIMER_Deinit>
+	/*for loop to Reinitialize all tasks in tasks array*/
+	for (uint8 counter=0; counter<MAX_TASKS;   counter++)
+ 8d2:	19 82       	std	Y+1, r1	; 0x01
+ 8d4:	30 c0       	rjmp	.+96     	; 0x936 <SOS_DeInit+0x72>
+	{
+		SOS_TasksArray[counter].TaskPeriodicity=0;
+ 8d6:	89 81       	ldd	r24, Y+1	; 0x01
+ 8d8:	28 2f       	mov	r18, r24
+ 8da:	30 e0       	ldi	r19, 0x00	; 0
+ 8dc:	c9 01       	movw	r24, r18
+ 8de:	88 0f       	add	r24, r24
+ 8e0:	99 1f       	adc	r25, r25
+ 8e2:	88 0f       	add	r24, r24
+ 8e4:	99 1f       	adc	r25, r25
+ 8e6:	82 0f       	add	r24, r18
+ 8e8:	93 1f       	adc	r25, r19
+ 8ea:	fc 01       	movw	r30, r24
+ 8ec:	e7 59       	subi	r30, 0x97	; 151
+ 8ee:	ff 4f       	sbci	r31, 0xFF	; 255
+ 8f0:	11 82       	std	Z+1, r1	; 0x01
+ 8f2:	10 82       	st	Z, r1
+		SOS_TasksArray[counter].TaskState=SOS_WAITING;
+ 8f4:	89 81       	ldd	r24, Y+1	; 0x01
+ 8f6:	28 2f       	mov	r18, r24
+ 8f8:	30 e0       	ldi	r19, 0x00	; 0
+ 8fa:	c9 01       	movw	r24, r18
+ 8fc:	88 0f       	add	r24, r24
+ 8fe:	99 1f       	adc	r25, r25
+ 900:	88 0f       	add	r24, r24
+ 902:	99 1f       	adc	r25, r25
+ 904:	82 0f       	add	r24, r18
+ 906:	93 1f       	adc	r25, r19
+ 908:	fc 01       	movw	r30, r24
+ 90a:	e8 59       	subi	r30, 0x98	; 152
+ 90c:	ff 4f       	sbci	r31, 0xFF	; 255
+ 90e:	82 e0       	ldi	r24, 0x02	; 2
+ 910:	80 83       	st	Z, r24
+		SOS_TasksArray[counter].TaskFunction_ptr=NULL_PTR;
+ 912:	89 81       	ldd	r24, Y+1	; 0x01
+ 914:	28 2f       	mov	r18, r24
+ 916:	30 e0       	ldi	r19, 0x00	; 0
+ 918:	c9 01       	movw	r24, r18
+ 91a:	88 0f       	add	r24, r24
+ 91c:	99 1f       	adc	r25, r25
+ 91e:	88 0f       	add	r24, r24
+ 920:	99 1f       	adc	r25, r25
+ 922:	82 0f       	add	r24, r18
+ 924:	93 1f       	adc	r25, r19
+ 926:	fc 01       	movw	r30, r24
+ 928:	e5 59       	subi	r30, 0x95	; 149
+ 92a:	ff 4f       	sbci	r31, 0xFF	; 255
+ 92c:	11 82       	std	Z+1, r1	; 0x01
+ 92e:	10 82       	st	Z, r1
+void SOS_DeInit (void)
+{
+	/*Stop TIMER0 */
+	TIMER_Deinit();
+	/*for loop to Reinitialize all tasks in tasks array*/
+	for (uint8 counter=0; counter<MAX_TASKS;   counter++)
+ 930:	89 81       	ldd	r24, Y+1	; 0x01
+ 932:	8f 5f       	subi	r24, 0xFF	; 255
+ 934:	89 83       	std	Y+1, r24	; 0x01
+ 936:	89 81       	ldd	r24, Y+1	; 0x01
+ 938:	84 36       	cpi	r24, 0x64	; 100
+ 93a:	68 f2       	brcs	.-102    	; 0x8d6 <SOS_DeInit+0x12>
+	{
+		SOS_TasksArray[counter].TaskPeriodicity=0;
+		SOS_TasksArray[counter].TaskState=SOS_WAITING;
+		SOS_TasksArray[counter].TaskFunction_ptr=NULL_PTR;
+	}
+}
+ 93c:	0f 90       	pop	r0
+ 93e:	cf 91       	pop	r28
+ 940:	df 91       	pop	r29
+ 942:	08 95       	ret
+
+00000944 <TIMER_init>:
+ *
+ * Return:			NULL
+ *******************************************************************************/
+
+void TIMER_init(void)
+{
+ 944:	df 93       	push	r29
+ 946:	cf 93       	push	r28
+ 948:	cd b7       	in	r28, 0x3d	; 61
+ 94a:	de b7       	in	r29, 0x3e	; 62
+	/**************************** CTC Mode Init ***************************************/
+	TIMER_TCCR0 &= (~((1<<WGM00)|(1<<WGM01)));			/*Clear WGM00 & WGM01 Bits in TCCR0 Registers*/
+ 94c:	a3 e5       	ldi	r26, 0x53	; 83
+ 94e:	b0 e0       	ldi	r27, 0x00	; 0
+ 950:	e3 e5       	ldi	r30, 0x53	; 83
+ 952:	f0 e0       	ldi	r31, 0x00	; 0
+ 954:	80 81       	ld	r24, Z
+ 956:	87 7b       	andi	r24, 0xB7	; 183
+ 958:	8c 93       	st	X, r24
+	TIMER_TCCR0 |= (1<<WGM01);							/*Set WGM01 Bit*/
+ 95a:	a3 e5       	ldi	r26, 0x53	; 83
+ 95c:	b0 e0       	ldi	r27, 0x00	; 0
+ 95e:	e3 e5       	ldi	r30, 0x53	; 83
+ 960:	f0 e0       	ldi	r31, 0x00	; 0
+ 962:	80 81       	ld	r24, Z
+ 964:	88 60       	ori	r24, 0x08	; 8
+ 966:	8c 93       	st	X, r24
+	/**************************** OCR0 Value ***************************************/
+	TIMER_OCR0   = OCR0_VALUE;
+ 968:	ec e5       	ldi	r30, 0x5C	; 92
+ 96a:	f0 e0       	ldi	r31, 0x00	; 0
+ 96c:	8a ef       	ldi	r24, 0xFA	; 250
+ 96e:	80 83       	st	Z, r24
+	/**************************** Pre-Scaler Bit Init ***************************************/
+	TIMER_TCCR0 &= (~((1<<CS00)|(1<<CS01)|(1<<CS02)));	/*Clear CS00 & CS01 & CS02 Bits in TCCR0 Registers*/
+ 970:	a3 e5       	ldi	r26, 0x53	; 83
+ 972:	b0 e0       	ldi	r27, 0x00	; 0
+ 974:	e3 e5       	ldi	r30, 0x53	; 83
+ 976:	f0 e0       	ldi	r31, 0x00	; 0
+ 978:	80 81       	ld	r24, Z
+ 97a:	88 7f       	andi	r24, 0xF8	; 248
+ 97c:	8c 93       	st	X, r24
+	TIMER_TCCR0 |= (1<<CS01);							/*Set CS01 Bit ----> pre-scaler = 8*/
+ 97e:	a3 e5       	ldi	r26, 0x53	; 83
+ 980:	b0 e0       	ldi	r27, 0x00	; 0
+ 982:	e3 e5       	ldi	r30, 0x53	; 83
+ 984:	f0 e0       	ldi	r31, 0x00	; 0
+ 986:	80 81       	ld	r24, Z
+ 988:	82 60       	ori	r24, 0x02	; 2
+ 98a:	8c 93       	st	X, r24
+	TIMER_TCCR0 |= (1<<CS00);							/*Set CS01 Bit ----> pre-scaler = 8*/
+ 98c:	a3 e5       	ldi	r26, 0x53	; 83
+ 98e:	b0 e0       	ldi	r27, 0x00	; 0
+ 990:	e3 e5       	ldi	r30, 0x53	; 83
+ 992:	f0 e0       	ldi	r31, 0x00	; 0
+ 994:	80 81       	ld	r24, Z
+ 996:	81 60       	ori	r24, 0x01	; 1
+ 998:	8c 93       	st	X, r24
+	TIMER_TIMSK |= (1u<<OCIE);
+ 99a:	a9 e5       	ldi	r26, 0x59	; 89
+ 99c:	b0 e0       	ldi	r27, 0x00	; 0
+ 99e:	e9 e5       	ldi	r30, 0x59	; 89
+ 9a0:	f0 e0       	ldi	r31, 0x00	; 0
+ 9a2:	80 81       	ld	r24, Z
+ 9a4:	82 60       	ori	r24, 0x02	; 2
+ 9a6:	8c 93       	st	X, r24
+
+}
+ 9a8:	cf 91       	pop	r28
+ 9aa:	df 91       	pop	r29
+ 9ac:	08 95       	ret
+
+000009ae <TIMER_Deinit>:
+ * Outputs:			NULL
+ *
+ * Return:			NULL
+ *******************************************************************************/
+void TIMER_Deinit(void)
+{
+ 9ae:	df 93       	push	r29
+ 9b0:	cf 93       	push	r28
+ 9b2:	cd b7       	in	r28, 0x3d	; 61
+ 9b4:	de b7       	in	r29, 0x3e	; 62
+	/**************************** Pre-Scaler Bit DeInit ***************************************/
+	TIMER_TCCR0 &= (~((1<<CS00)|(1<<CS01)|(1<<CS02)));	/*Clear CS00 & CS01 & CS02 Bits in TCCR0 Registers*/
+ 9b6:	a3 e5       	ldi	r26, 0x53	; 83
+ 9b8:	b0 e0       	ldi	r27, 0x00	; 0
+ 9ba:	e3 e5       	ldi	r30, 0x53	; 83
+ 9bc:	f0 e0       	ldi	r31, 0x00	; 0
+ 9be:	80 81       	ld	r24, Z
+ 9c0:	88 7f       	andi	r24, 0xF8	; 248
+ 9c2:	8c 93       	st	X, r24
+	/**************************** OCR0 Value **************************************************/
+	TIMER_OCR0=LOW;
+ 9c4:	ec e5       	ldi	r30, 0x5C	; 92
+ 9c6:	f0 e0       	ldi	r31, 0x00	; 0
+ 9c8:	10 82       	st	Z, r1
+}
+ 9ca:	cf 91       	pop	r28
+ 9cc:	df 91       	pop	r29
+ 9ce:	08 95       	ret
+
+000009d0 <main>:
+
+/*******************************************************************************
+ *                   			 Main function                                *
+ *******************************************************************************/
+u32 main (void)
+{
+ 9d0:	df 93       	push	r29
+ 9d2:	cf 93       	push	r28
+ 9d4:	cd b7       	in	r28, 0x3d	; 61
+ 9d6:	de b7       	in	r29, 0x3e	; 62
+	DIO_SetPinDirection(DIO_PIN12,OUTPUT);
+ 9d8:	8c e0       	ldi	r24, 0x0C	; 12
+ 9da:	61 e0       	ldi	r22, 0x01	; 1
+ 9dc:	0e 94 9f 01 	call	0x33e	; 0x33e <DIO_SetPinDirection>
+	DIO_SetPinDirection(DIO_PIN13,OUTPUT);
+ 9e0:	8d e0       	ldi	r24, 0x0D	; 13
+ 9e2:	61 e0       	ldi	r22, 0x01	; 1
+ 9e4:	0e 94 9f 01 	call	0x33e	; 0x33e <DIO_SetPinDirection>
+	DIO_SetPinDirection(DIO_PIN14,OUTPUT);
+ 9e8:	8e e0       	ldi	r24, 0x0E	; 14
+ 9ea:	61 e0       	ldi	r22, 0x01	; 1
+ 9ec:	0e 94 9f 01 	call	0x33e	; 0x33e <DIO_SetPinDirection>
+	SOS_Init();
+ 9f0:	0e 94 1f 03 	call	0x63e	; 0x63e <SOS_Init>
+	SET_BIT(SREG,I);
+ 9f4:	af e5       	ldi	r26, 0x5F	; 95
+ 9f6:	b0 e0       	ldi	r27, 0x00	; 0
+ 9f8:	ef e5       	ldi	r30, 0x5F	; 95
+ 9fa:	f0 e0       	ldi	r31, 0x00	; 0
+ 9fc:	80 81       	ld	r24, Z
+ 9fe:	80 68       	ori	r24, 0x80	; 128
+ a00:	8c 93       	st	X, r24
+	SOS_Create_Task(SOS_PRIORITY_0,500,Task1);
+ a02:	20 e2       	ldi	r18, 0x20	; 32
+ a04:	35 e0       	ldi	r19, 0x05	; 5
+ a06:	80 e0       	ldi	r24, 0x00	; 0
+ a08:	64 ef       	ldi	r22, 0xF4	; 244
+ a0a:	71 e0       	ldi	r23, 0x01	; 1
+ a0c:	a9 01       	movw	r20, r18
+ a0e:	0e 94 5f 03 	call	0x6be	; 0x6be <SOS_Create_Task>
+	SOS_Create_Task(SOS_PRIORITY_1,1000,Task2);
+ a12:	2a e3       	ldi	r18, 0x3A	; 58
+ a14:	35 e0       	ldi	r19, 0x05	; 5
+ a16:	81 e0       	ldi	r24, 0x01	; 1
+ a18:	68 ee       	ldi	r22, 0xE8	; 232
+ a1a:	73 e0       	ldi	r23, 0x03	; 3
+ a1c:	a9 01       	movw	r20, r18
+ a1e:	0e 94 5f 03 	call	0x6be	; 0x6be <SOS_Create_Task>
+	SOS_Create_Task(SOS_PRIORITY_2,1500,Task3);
+ a22:	2f e5       	ldi	r18, 0x5F	; 95
+ a24:	35 e0       	ldi	r19, 0x05	; 5
+ a26:	82 e0       	ldi	r24, 0x02	; 2
+ a28:	6c ed       	ldi	r22, 0xDC	; 220
+ a2a:	75 e0       	ldi	r23, 0x05	; 5
+ a2c:	a9 01       	movw	r20, r18
+ a2e:	0e 94 5f 03 	call	0x6be	; 0x6be <SOS_Create_Task>
+
+	SOS_Run();
+ a32:	0e 94 14 04 	call	0x828	; 0x828 <SOS_Run>
+ a36:	80 e0       	ldi	r24, 0x00	; 0
+ a38:	90 e0       	ldi	r25, 0x00	; 0
+}
+ a3a:	cf 91       	pop	r28
+ a3c:	df 91       	pop	r29
+ a3e:	08 95       	ret
+
+00000a40 <Task1>:
+
+/*******************************************************************************
+ *                      Functions Definition                                   *
+ *******************************************************************************/
+void Task1(void)
+{
+ a40:	df 93       	push	r29
+ a42:	cf 93       	push	r28
+ a44:	cd b7       	in	r28, 0x3d	; 61
+ a46:	de b7       	in	r29, 0x3e	; 62
+	/*static uint8 counter=0;*/
+	static uint8 Task1_Flag = 0u;
+	Task1_Flag ^= 1u;
+ a48:	90 91 64 00 	lds	r25, 0x0064
+ a4c:	81 e0       	ldi	r24, 0x01	; 1
+ a4e:	89 27       	eor	r24, r25
+ a50:	80 93 64 00 	sts	0x0064, r24
+	if(Task1_Flag == 1u)
+ a54:	80 91 64 00 	lds	r24, 0x0064
+ a58:	81 30       	cpi	r24, 0x01	; 1
+ a5a:	29 f4       	brne	.+10     	; 0xa66 <Task1+0x26>
+	{
+		DIO_WritePin(DIO_PIN12,HIGH);
+ a5c:	8c e0       	ldi	r24, 0x0C	; 12
+ a5e:	61 e0       	ldi	r22, 0x01	; 1
+ a60:	0e 94 3e 00 	call	0x7c	; 0x7c <DIO_WritePin>
+ a64:	04 c0       	rjmp	.+8      	; 0xa6e <Task1+0x2e>
+	}
+	else
+	{
+		DIO_WritePin(DIO_PIN12,LOW);
+ a66:	8c e0       	ldi	r24, 0x0C	; 12
+ a68:	60 e0       	ldi	r22, 0x00	; 0
+ a6a:	0e 94 3e 00 	call	0x7c	; 0x7c <DIO_WritePin>
+	{
+		SOS_DeInit();
+	}
+	 */
+
+}
+ a6e:	cf 91       	pop	r28
+ a70:	df 91       	pop	r29
+ a72:	08 95       	ret
+
+00000a74 <Task2>:
+void Task2(void)
+{
+ a74:	df 93       	push	r29
+ a76:	cf 93       	push	r28
+ a78:	cd b7       	in	r28, 0x3d	; 61
+ a7a:	de b7       	in	r29, 0x3e	; 62
+	static uint8 counter = 0;
+	static uint8 Task2_Flag = 0u;
+	Task2_Flag ^= 1u;
+ a7c:	90 91 65 00 	lds	r25, 0x0065
+ a80:	81 e0       	ldi	r24, 0x01	; 1
+ a82:	89 27       	eor	r24, r25
+ a84:	80 93 65 00 	sts	0x0065, r24
+	if(Task2_Flag == 1u)
+ a88:	80 91 65 00 	lds	r24, 0x0065
+ a8c:	81 30       	cpi	r24, 0x01	; 1
+ a8e:	29 f4       	brne	.+10     	; 0xa9a <Task2+0x26>
+	{
+		DIO_WritePin(DIO_PIN13,HIGH);
+ a90:	8d e0       	ldi	r24, 0x0D	; 13
+ a92:	61 e0       	ldi	r22, 0x01	; 1
+ a94:	0e 94 3e 00 	call	0x7c	; 0x7c <DIO_WritePin>
+ a98:	04 c0       	rjmp	.+8      	; 0xaa2 <Task2+0x2e>
+	}
+	else
+	{
+		DIO_WritePin(DIO_PIN13,LOW);
+ a9a:	8d e0       	ldi	r24, 0x0D	; 13
+ a9c:	60 e0       	ldi	r22, 0x00	; 0
+ a9e:	0e 94 3e 00 	call	0x7c	; 0x7c <DIO_WritePin>
+	}
+	//SOS_Delete_Task(Task1);
+	counter++;
+ aa2:	80 91 66 00 	lds	r24, 0x0066
+ aa6:	8f 5f       	subi	r24, 0xFF	; 255
+ aa8:	80 93 66 00 	sts	0x0066, r24
+	if(counter == 3u)
+ aac:	80 91 66 00 	lds	r24, 0x0066
+ ab0:	83 30       	cpi	r24, 0x03	; 3
+ ab2:	11 f4       	brne	.+4      	; 0xab8 <Task2+0x44>
+	{
+		SOS_DeInit();
+ ab4:	0e 94 62 04 	call	0x8c4	; 0x8c4 <SOS_DeInit>
+	}
+
+}
+ ab8:	cf 91       	pop	r28
+ aba:	df 91       	pop	r29
+ abc:	08 95       	ret
+
+00000abe <Task3>:
+void Task3(void )
+{
+ abe:	df 93       	push	r29
+ ac0:	cf 93       	push	r28
+ ac2:	cd b7       	in	r28, 0x3d	; 61
+ ac4:	de b7       	in	r29, 0x3e	; 62
+
+	static uint8 Task3_Flag = 0u;
+	Task3_Flag ^= 1u;
+ ac6:	90 91 67 00 	lds	r25, 0x0067
+ aca:	81 e0       	ldi	r24, 0x01	; 1
+ acc:	89 27       	eor	r24, r25
+ ace:	80 93 67 00 	sts	0x0067, r24
+	if(Task3_Flag == 1u)
+ ad2:	80 91 67 00 	lds	r24, 0x0067
+ ad6:	81 30       	cpi	r24, 0x01	; 1
+ ad8:	29 f4       	brne	.+10     	; 0xae4 <Task3+0x26>
+	{
+		DIO_WritePin(DIO_PIN14,HIGH);
+ ada:	8e e0       	ldi	r24, 0x0E	; 14
+ adc:	61 e0       	ldi	r22, 0x01	; 1
+ ade:	0e 94 3e 00 	call	0x7c	; 0x7c <DIO_WritePin>
+ ae2:	04 c0       	rjmp	.+8      	; 0xaec <Task3+0x2e>
+	}
+	else
+	{
+		DIO_WritePin(DIO_PIN14,LOW);
+ ae4:	8e e0       	ldi	r24, 0x0E	; 14
+ ae6:	60 e0       	ldi	r22, 0x00	; 0
+ ae8:	0e 94 3e 00 	call	0x7c	; 0x7c <DIO_WritePin>
+	}
+	SOS_Delete_Task(Task1);
+ aec:	80 e2       	ldi	r24, 0x20	; 32
+ aee:	95 e0       	ldi	r25, 0x05	; 5
+ af0:	0e 94 bb 03 	call	0x776	; 0x776 <SOS_Delete_Task>
+}
+ af4:	cf 91       	pop	r28
+ af6:	df 91       	pop	r29
+ af8:	08 95       	ret
+
+00000afa <__udivmodsi4>:
+ afa:	a1 e2       	ldi	r26, 0x21	; 33
+ afc:	1a 2e       	mov	r1, r26
+ afe:	aa 1b       	sub	r26, r26
+ b00:	bb 1b       	sub	r27, r27
+ b02:	fd 01       	movw	r30, r26
+ b04:	0d c0       	rjmp	.+26     	; 0xb20 <__udivmodsi4_ep>
+
+00000b06 <__udivmodsi4_loop>:
+ b06:	aa 1f       	adc	r26, r26
+ b08:	bb 1f       	adc	r27, r27
+ b0a:	ee 1f       	adc	r30, r30
+ b0c:	ff 1f       	adc	r31, r31
+ b0e:	a2 17       	cp	r26, r18
+ b10:	b3 07       	cpc	r27, r19
+ b12:	e4 07       	cpc	r30, r20
+ b14:	f5 07       	cpc	r31, r21
+ b16:	20 f0       	brcs	.+8      	; 0xb20 <__udivmodsi4_ep>
+ b18:	a2 1b       	sub	r26, r18
+ b1a:	b3 0b       	sbc	r27, r19
+ b1c:	e4 0b       	sbc	r30, r20
+ b1e:	f5 0b       	sbc	r31, r21
+
+00000b20 <__udivmodsi4_ep>:
+ b20:	66 1f       	adc	r22, r22
+ b22:	77 1f       	adc	r23, r23
+ b24:	88 1f       	adc	r24, r24
+ b26:	99 1f       	adc	r25, r25
+ b28:	1a 94       	dec	r1
+ b2a:	69 f7       	brne	.-38     	; 0xb06 <__udivmodsi4_loop>
+ b2c:	60 95       	com	r22
+ b2e:	70 95       	com	r23
+ b30:	80 95       	com	r24
+ b32:	90 95       	com	r25
+ b34:	9b 01       	movw	r18, r22
+ b36:	ac 01       	movw	r20, r24
+ b38:	bd 01       	movw	r22, r26
+ b3a:	cf 01       	movw	r24, r30
+ b3c:	08 95       	ret
+
+00000b3e <_exit>:
+ b3e:	f8 94       	cli
+
+00000b40 <__stop_program>:
+ b40:	ff cf       	rjmp	.-2      	; 0xb40 <__stop_program>
